@@ -1,5 +1,7 @@
+from flask import Flask, jsonify, request, url_for, abort, g, render_template, redirect, flash, make_response
+
+#libraries for connecting to data
 from model import Base, User, Item
-from flask import Flask, jsonify, request, url_for, abort, g, render_template
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -7,25 +9,28 @@ from sqlalchemy import create_engine
 from flask_httpauth import HTTPBasicAuth
 import json
 
+from flask import session as login_session
+import random
+import string
+
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
-from flask import make_response
 import requests
 
 auth = HTTPBasicAuth()
 
 #Connect to Item Catalog Database
-engine = create_engine('sqlite:///itemCatalog.db')
+engine = create_engine('sqlite:///itemCatalog.db', connect_args={'check_same_thread':False})
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
 app = Flask(__name__)
 
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
-
 
 @auth.verify_password
 def verify_password(username_or_token, password):
