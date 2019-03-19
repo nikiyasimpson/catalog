@@ -423,24 +423,25 @@ def showMenu(restaurant_id):
         return render_template('menu.html', items=items, restaurant=restaurant, creator=creator)
 
 
-# Create a new menu item
-@app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
-def newMenuItem(restaurant_id):
+# Create a new item
+@app.route('/item/new/', methods=['GET', 'POST'])
+@auth.login_required
+def newItem():
     if 'username' not in login_session:
         return redirect('/login')
-    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     if request.method == 'POST':
-        newItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form[
-                           'price'], course=request.form['course'], restaurant_id=restaurant_id, user_id=restaurant.user_id)
+        newItem = Item(name=request.form['name'], description=request.form['description'], price=request.form[
+                           'price'])
         session.add(newItem)
         session.commit()
-        flash('New Menu %s Item Successfully Created' % (newItem.name))
-        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+        flash('New %s Item Successfully Created' % (newItem.name))
+        return redirect(url_for('showCatalog'))
     else:
-        return render_template('newmenuitem.html', restaurant_id=restaurant_id)
+        return render_template('newitem.html')
 
 # Edit an item from the catalog
 @app.route('/item/<int:id>/edit', methods=['GET', 'POST'])
+@auth.login_required
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
