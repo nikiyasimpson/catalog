@@ -465,20 +465,20 @@ def editMenuItem(restaurant_id, menu_id):
         return render_template('editmenuitem.html', restaurant_id=restaurant_id, menu_id=menu_id, item=editedItem)
 
 
-# Delete a menu item
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET', 'POST'])
-def deleteMenuItem(restaurant_id, menu_id):
+# Delete an item from the catalog
+@app.route('item/<int:id>/remove', methods=['GET', 'POST'])
+@auth.login_required
+def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
-    #restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
+    itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
-        flash('Menu Item Successfully Deleted')
-        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+        flash('Item Successfully Deleted')
+        return redirect(url_for('showCatalog'))
     else:
-        return render_template('deleteMenuItem.html', item=itemToDelete)
+        return render_template('deleteItem.html', item=itemToDelete)
 
 
 if __name__ == '__main__':
