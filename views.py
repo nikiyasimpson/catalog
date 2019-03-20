@@ -30,7 +30,7 @@ app = Flask(__name__)
 
 
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+    open('client_secret.json', 'r').read())['web']['client_id']
 
 @auth.verify_password
 def verify_password(username_or_token, password):
@@ -45,17 +45,13 @@ def verify_password(username_or_token, password):
     g.user = user
     return True
 
-@app.route('/login')
+@app.route('/login', methods = ['GET','POST'])
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
-
-@app.route('/clientOAuth')
-def start():
-    return render_template('clientOAuth.html')
 
 @app.route('/oauth/<provider>', methods = ['POST'])
 def login(provider):
@@ -82,25 +78,6 @@ def login(provider):
             response = make_response(json.dumps(result.get('error')), 500)
             response.headers['Content-Type'] = 'application/json'
             
-        # # Verify that the access token is used for the intended user.
-        # gplus_id = credentials.id_token['sub']
-        # if result['user_id'] != gplus_id:
-        #     response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
-        #     response.headers['Content-Type'] = 'application/json'
-        #     return response
-
-        # # Verify that the access token is valid for this app.
-        # if result['issued_to'] != CLIENT_ID:
-        #     response = make_response(json.dumps("Token's client ID does not match app's."), 401)
-        #     response.headers['Content-Type'] = 'application/json'
-        #     return response
-
-        # stored_credentials = login_session.get('credentials')
-        # stored_gplus_id = login_session.get('gplus_id')
-        # if stored_credentials is not None and gplus_id == stored_gplus_id:
-        #     response = make_response(json.dumps('Current user is already connected.'), 200)
-        #     response.headers['Content-Type'] = 'application/json'
-        #     return response
         print ("Access Token : %s " % credentials.access_token)
 
         #Find User or make a new one
@@ -127,8 +104,6 @@ def login(provider):
         #Make token
         token = user.generate_auth_token(600)
 
-        
-
         #Send back token to the client 
         return jsonify({'token': token.decode('ascii')})
         #return jsonify({'token': token.decode('ascii'), 'duration': 600})
@@ -140,39 +115,6 @@ def login(provider):
 def get_auth_token():
     token = g.user.generate_auth_token()
     return jsonify({'token': token.decode('ascii')})
-
-
-
-@app.route('/users', methods = ['POST'])
-def new_user():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    if username is None or password is None:
-        print("missing arguments")
-        abort(400) 
-        
-    if session.query(User).filter_by(username = username).first() is not None:
-        print("existing user")
-        user = session.query(User).filter_by(username=username).first()
-        return jsonify({'message':'user already exists'}), 200#, {'Location': url_for('get_user', id = user.id, _external = True)}
-        
-    user = User(username = username)
-    user.hash_password(password)
-    session.add(user)
-    session.commit()
-    return jsonify({ 'username': user.username }), 201#, {'Location': url_for('get_user', id = user.id, _external = True)}
-
-@app.route('/api/users/<int:id>')
-def get_user(id):
-    user = session.query(User).filter_by(id=id).one()
-    if not user:
-        abort(400)
-    return jsonify({'username': user.username})
-
-@app.route('/api/resource')
-@auth.login_required
-def get_resource():
-    return jsonify({ 'data': 'Hello, %s!' % g.user.username })
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -265,8 +207,6 @@ def gconnect():
     return output
 
 # User Helper Functions
-
-
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
@@ -324,11 +264,13 @@ def gdisconnect():
 # JSON APIs to view Catalog Information
 
 @app.route('/api/item/<int:id>/JSON')
+@auth.login_required
 def ItemJSON(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
 @app.route('/api/items/JSON')
+@auth.login_required
 def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
@@ -383,7 +325,7 @@ def editItem(item_id):
 
 
 # Delete an item from the catalog
-@app.route('item/<int:id>/remove', methods=['GET', 'POST'])
+@app.route('/item/<int:id>/remove', methods=['GET', 'POST'])
 @auth.login_required
 def deleteItem(item_id):
     if 'username' not in login_session:
