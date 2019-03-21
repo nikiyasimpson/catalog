@@ -300,8 +300,7 @@ def editItem(item_id):
 
 
 # Delete an item from the catalog
-@app.route('/item/<int:id>/remove', methods=['GET', 'POST'])
-@auth.login_required
+@app.route('/item/<int:item_id>/remove', methods=['GET', 'POST'])
 def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')

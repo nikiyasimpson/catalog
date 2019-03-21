@@ -166,3 +166,9 @@ input[type="text"] {
 	border-bottom: solid black;
 	margin-bottom: 20px;
 }
+
+.item-photo {
+	width: 250px;
+	height: auto;
+	float: left;
+}
