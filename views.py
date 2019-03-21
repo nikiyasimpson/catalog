@@ -278,8 +278,7 @@ def newItem():
         return render_template('newitem.html')
 
 # Edit an item from the catalog
-@app.route('/item/<int:id>/edit', methods=['GET', 'POST'])
-@auth.login_required
+@app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')

@@ -171,4 +171,15 @@ input[type="text"] {
 	width: 250px;
 	height: auto;
 	float: left;
+	display:block;
+}
+
+.item-description {
+	display:block;
+	margin-bottom: 20px;
+}
+
+.modify-buttons {
+	display: block;
+	margin: 5px;
 }
