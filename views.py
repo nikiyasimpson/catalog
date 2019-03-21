@@ -21,8 +21,9 @@ import requests
 
 #set libraries and variables for image uploads
 from werkzeug.utils import secure_filename
+from flask import send_from_directory
 
-UPLOAD_FOLDER = '/static/images'
+UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 auth = HTTPBasicAuth()
@@ -35,6 +36,8 @@ session = DBSession()
 
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# only allow 4MB
+app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
 
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
@@ -246,11 +249,30 @@ def newItem():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
+         # check if the post request has the file part
+        if 'picture' not in request.files:
+            flash('No picture image to upload')
+            return redirect(request.url)
+        file = request.files['picture']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected picture')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print('file uploaded successfully')
+            print(filename)
+            #return redirect(url_for('uploaded_file', filename=filename))
+        
         newItem = Item(name=request.form['name'], description=request.form['description'], price=request.form[
-                           'price'], picture= request.form['picture'])
+                           'price'], picture= filename)
         session.add(newItem)
         session.commit()
         flash('New %s Item Successfully Created' % (newItem.name))
+
+
         return redirect(url_for('showCatalog'))
     else:
         return render_template('newitem.html')
@@ -295,6 +317,11 @@ def deleteItem(item_id):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
