@@ -161,3 +161,8 @@ h3 {
 	text-align: center;
 
 }
+
+input[type="text"] {
+	border-bottom: solid black;
+	margin-bottom: 20px;
+}

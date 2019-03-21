@@ -1,0 +1,57 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>New Restaurant</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post">
+				<div class="form-group">
+				<label for="name">Name:</label>
+                <input type ="text" class="form-control" maxlength="100" name="name">
+                <label for="description">Description:</label>
+                <input type ="text" class="form-control" maxlength="100" name="description">
+                <label for="price">Price:</label>
+                <input type ="text" class="form-control" maxlength="100" name="price">
+                <label for="picture">Picture:</label>
+                <input type="file" id="picture" name="picture" accept="image/png, image/jpeg">
+				<div class="padding-bottom"></div>
+				<button type="submit" class="btn btn-default" id="submit" type="submit">
+				<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Create</button>
+				</div>
+			</form>
+		</div>
+    </div>
+    <script>
+        let selectedFile;
+        $('picture').change(function() {
+            function handleFileUploadChange(e) {
+                selectedFile = e.target.files[0];
+                console.log('File Selected:', selectedFile);
+            }
+        })
+
+        $('submit').submit(function() {
+            function handleFileUploadSubmit(e) {
+            //create a child directory called images, and place the file inside this directory
+            const uploadImage = storageRef.child(`static/images/${selectedFile.name}`).put(selectedFile); 
+            uploadImage.on('state_changed', (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            }, (error) => {
+            // Handle unsuccessful uploads
+            console.log(error);
+            }, () => {
+            // Do something once upload is complete
+            console.log('success');
+            });
+        }
+        })
+
+    </script>
+{% endblock %}
