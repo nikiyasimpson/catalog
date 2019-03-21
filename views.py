@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request, url_for, abort, g, render_template, redirect, flash, make_response
 
 #libraries for connecting to data
@@ -18,6 +19,12 @@ from oauth2client.client import FlowExchangeError
 import httplib2
 import requests
 
+#set libraries and variables for image uploads
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '/static/images'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
 auth = HTTPBasicAuth()
 
 #Connect to Item Catalog Database
@@ -27,6 +34,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 app = Flask(__name__, static_url_path='/static')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
@@ -232,9 +240,6 @@ def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
-
-
-
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
 def newItem():
@@ -242,7 +247,7 @@ def newItem():
         return redirect('/login')
     if request.method == 'POST':
         newItem = Item(name=request.form['name'], description=request.form['description'], price=request.form[
-                           'price'])
+                           'price'], picture= request.form['picture'])
         session.add(newItem)
         session.commit()
         flash('New %s Item Successfully Created' % (newItem.name))
@@ -287,6 +292,9 @@ def deleteItem(item_id):
     else:
         return render_template('deleteItem.html', item=itemToDelete)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
