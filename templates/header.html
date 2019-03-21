@@ -1,10 +1,10 @@
 <div class="row top-menu">
-	<div class="col-md-6">
+	<div class="col-md-10">
 		<a href="{{url_for('showCatalog')}}">
-			<span class="glyphicon glyphicon-home" aria-hidden="true"></span>Shopping Catalog
+			<span class="glyphicon glyphicon-home" aria-hidden="true"></span>Top Furniture Catalog
 		</a>
 	</div>
-	<div class="col-md-6 text-right">
+	<div class="col-md-2 text-right">
 		<p>
 				{% if login %}
 					<p>Logged in as {{login}}</p>
@@ -13,4 +13,27 @@
 					<a href="{{url_for('showLogin')}}">Login</a></p>	
 			{% endif %}
 	</div>
+</div>
+<div class="row divider blue">
+	<div class="col-md-12"></div>
+</div>
+<div class="row banner main">
+	<div class="col-md-1"></div>
+	<div class="col-md-11 padding-none">
+		<h1>Top Furniture Catalog</h1>
+	</div>
+</div>
+
+<div class = 'flash'>
+		  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+	  
+	<ul>
+	{% for message in messages %}
+		<li> <strong> {{ message }} </strong> </li>
+	{% endfor %}
+	</ul>
+	{% endif %}
+{% endwith %}
+
 </div>
