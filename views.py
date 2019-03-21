@@ -20,14 +20,15 @@ import requests
 
 auth = HTTPBasicAuth()
 
+
+
 #Connect to Item Catalog Database
 engine = create_engine('sqlite:///itemCatalog.db', connect_args={'check_same_thread':False})
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-app = Flask(__name__)
-
+app = Flask(__name__, static_url_path='/static')
 
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
