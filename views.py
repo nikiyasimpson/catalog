@@ -53,10 +53,14 @@ def showLogin():
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
-@app.route('/clearSession')
-def clear_session():
+
+@app.route('/logout')
+def logout():
+    gdisconnect()
     login_session.clear()
-    return "session cleared"
+    items = session.query(Item).order_by(asc(Item.name))
+
+    return render_template('publiccatalog.html', items=items)
     
 # Show item catalog
 @app.route('/')
@@ -65,7 +69,7 @@ def showCatalog():
     if 'username' not in login_session:
         return render_template('publiccatalog.html', items=items)
     else:
-        return render_template('catalog.html', items=items)
+        return render_template('catalog.html', items=items, login=login_session['username'])
 
 
 @app.route('/token')
@@ -133,7 +137,6 @@ def gconnect():
 
     # Store the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
-    login_session['gplus_id'] = gplus_id
 
     # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -203,7 +206,6 @@ def gdisconnect():
     if result['status'] == '200':
         # Reset the user's sesson.
         del login_session['access_token']
-        del login_session['gplus_id']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
@@ -237,7 +239,6 @@ def itemsJSON():
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
-@auth.login_required
 def newItem():
     if 'username' not in login_session:
         return redirect('/login')
