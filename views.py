@@ -31,6 +31,7 @@ app = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = "Item Catalog"
 
 @auth.verify_password
 def verify_password(username_or_token, password):
@@ -45,70 +46,26 @@ def verify_password(username_or_token, password):
     g.user = user
     return True
 
-@app.route('/login', methods = ['GET','POST'])
+@app.route('/login')
 def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in range(32))
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
-    # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
 
-@app.route('/oauth/<provider>', methods = ['POST'])
-def login(provider):
-    auth_code = request.json.get('auth_code')
-    print ("received auth code %s" % auth_code)
-    if provider == 'google':
-        try:
-            # Upgrade the authorization code into a credentials object
-            oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
-            oauth_flow.redirect_uri = 'postmessage'
-            credentials = oauth_flow.step2_exchange(auth_code)
-        except FlowExchangeError:
-            response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
-            response.headers['Content-Type'] = 'application/json'
-            return response
-          
-        # Check that the access token is valid.
-        access_token = credentials.access_token
-        url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
-        h = httplib2.Http()
-        result = json.loads(h.request(url, 'GET')[1])
-        # If there was an error in the access token info, abort.
-        if result.get('error') is not None:
-            response = make_response(json.dumps(result.get('error')), 500)
-            response.headers['Content-Type'] = 'application/json'
-            
-        print ("Access Token : %s " % credentials.access_token)
-
-        #Find User or make a new one
-        
-        #Get user info
-        h = httplib2.Http()
-        userinfo_url =  "https://www.googleapis.com/oauth2/v1/userinfo"
-        params = {'access_token': credentials.access_token, 'alt':'json'}
-        answer = requests.get(userinfo_url, params=params)
-      
-        data = answer.json()
-
-        name = data['name']
-        picture = data['picture']
-        email = data['email']
-
-        #see if user exists, if it doesn't make a new one
-        user = session.query(User).filter_by(email=email).first()
-        if not user:
-            user = User(username = name, picture = picture, email = email)
-            session.add(user)
-            session.commit()
-
-        #Make token
-        token = user.generate_auth_token(600)
-
-        #Send back token to the client 
-        return jsonify({'token': token.decode('ascii')})
-        #return jsonify({'token': token.decode('ascii'), 'duration': 600})
+@app.route('/clearSession')
+def clear_session():
+    login_session.clear()
+    return "session cleared"
+    
+# Show item catalog
+@app.route('/')
+def showCatalog():
+    items = session.query(Item).order_by(asc(Item.name))
+    if 'username' not in login_session:
+        return render_template('publiccatalog.html', items=items)
     else:
-        return 'Unrecoginized Provider'
+        return render_template('catalog.html', items=items)
+
 
 @app.route('/token')
 @auth.login_required
@@ -129,7 +86,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -140,8 +97,7 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
-           % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
@@ -194,7 +150,7 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-
+    
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -208,7 +164,7 @@ def gconnect():
 
 # User Helper Functions
 def createUser(login_session):
-    newUser = User(name=login_session['username'], email=login_session[
+    newUser = User(username=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
@@ -276,15 +232,7 @@ def itemsJSON():
     return jsonify(items=[i.serialize for i in items])
 
 
-# Show item catalog
-@app.route('/')
-@app.route('/catalog/')
-def showCatalog():
-    items = session.query(Item).order_by(asc(Item.name))
-    if 'username' not in login_session:
-        return render_template('publiccatalog.html', items=items)
-    else:
-        return render_template('catalog.html', items=items)
+
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
@@ -341,5 +289,6 @@ def deleteItem(item_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host = '0.0.0.0', port = 5000)
