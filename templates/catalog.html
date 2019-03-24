@@ -5,6 +5,11 @@
 	<div class="row padding-top padding-bottom">
 		<div class="col-md-1"></div>
 		<div class="col-md-10 padding-none">
+				<a href="{{url_for('newCategory')}}">
+						<button class="btn btn-default" id="new-restaurant">
+							<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Add Category
+						</button>
+					</a>
 			<a href="{{url_for('newItem')}}">
 				<button class="btn btn-default" id="new-restaurant">
 					<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Add Item
@@ -13,7 +18,10 @@
 		</div>
 		<div class="col-md-1"></div>
 	</div>
+	{% for category in categories %}
+	<h2>{{category.name}}</h2>
 	{% for item in items %}
+		{% if item.category_id == category.id : %}
 			<div class="row">
 				<div class="col-md-1"></div>
 					<div class="col-md-10 item-list">
@@ -29,6 +37,8 @@
 					</div>
 				<div class="col-md-1"></div>
 			</div>
-		</a>
+		
+		{% endif %}
+	{% endfor %}
 	{% endfor %}
 {% endblock %}

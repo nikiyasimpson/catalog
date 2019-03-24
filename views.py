@@ -74,11 +74,12 @@ def logout():
 # Show item catalog
 @app.route('/')
 def showCatalog():
+    categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(Item).order_by(asc(Item.name))
     if 'username' not in login_session:
-        return render_template('publiccatalog.html', items=items)
+        return render_template('publiccatalog.html', items=items, categories=categories)
     else:
-        return render_template('catalog.html', items=items, login=login_session['username'])
+        return render_template('catalog.html', items=items, categories=categories, login=login_session['username'])
 
 
 
@@ -245,7 +246,6 @@ def itemsJSON():
 ## CATEGORY ROUTES
 # Create a new category
 @app.route('/category/new/', methods=['GET', 'POST'])
-@auth.login_required
 def newCategory():
     if 'username' not in login_session:
         return redirect('/login')
@@ -260,7 +260,6 @@ def newCategory():
 
 # Edit category from the catalog
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
-@auth.login_required
 def editCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -291,7 +290,6 @@ def deleteCategory(category_id):
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
-@auth.login_required
 def newItem():
     if 'username' not in login_session:
         return redirect('/login')
@@ -327,7 +325,6 @@ def newItem():
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
-@auth.login_required
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -339,12 +336,15 @@ def editItem(item_id):
             editedItem.description = request.form['description']
         if request.form['price']:
             editedItem.price = request.form['price']
+        if request.form['category_id']:
+            editedItem.category_id = request.form['category_id']
         session.add(editedItem)
         session.commit()
         flash('Item Successfully Edited')
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('edititem.html', item=editedItem)
+        categories = session.query(Category).all()
+        return render_template('edititem.html', item=editedItem, categories = categories)
 
 
 # Delete an item from the catalog

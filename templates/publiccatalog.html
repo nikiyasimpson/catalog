@@ -6,7 +6,10 @@
 	
 		<div class="col-md-1"></div>
 	</div>
-	{% for item in items %}
+	{% for category in categories %}
+		<h2>{{category.name}}</h2>
+		{% for item in items %}
+			{% if item.category_id == category.id : %}
 			<div class="row">
 				<div class="col-md-1"></div>
 					<div class="col-md-10 item-list">
@@ -17,6 +20,7 @@
 					</div>
 				<div class="col-md-1"></div>
 			</div>
-		</a>
+		{% endif %}
+		{% endfor %}
 	{% endfor %}
 {% endblock %}
