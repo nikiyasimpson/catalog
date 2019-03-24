@@ -56,8 +56,9 @@ class Item(Base):
 	price = Column(String)
 	category_id = Column(Integer, ForeignKey('category.id'))
 	category = relationship(Category)
-	user_id = Column(Integer, ForeignKey'user.id'))
-    user = relationship(User)
+	user_id = Column(Integer, ForeignKey('user.id'))
+	user = relationship(User)
+	
 	@property
 	def serialize(self):
 	    """Return object data in easily serializeable format"""

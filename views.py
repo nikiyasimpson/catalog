@@ -2,7 +2,7 @@ import os
 from flask import Flask, jsonify, request, url_for, abort, g, render_template, redirect, flash, make_response
 
 #libraries for connecting to data
-from model import Base, User, Item
+from model import Base, User, Item, Category
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, asc
@@ -158,7 +158,7 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-    token = get_auth_token()
+    
 
     output = ''
     output += '<h1>Welcome, '
@@ -267,7 +267,7 @@ def newItem():
             #return redirect(url_for('uploaded_file', filename=filename))
         
         newItem = Item(name=request.form['name'], description=request.form['description'], price=request.form[
-                           'price'], picture= filename)
+                           'price'], picture= filename, user_id = login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash('New %s Item Successfully Created' % (newItem.name))
@@ -301,7 +301,6 @@ def editItem(item_id):
 
 # Delete an item from the catalog
 @app.route('/item/<int:item_id>/remove', methods=['GET', 'POST'])
-@auth.login_required
 def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
