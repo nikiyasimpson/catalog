@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String
+from sqlalchemy import Column,Integer,String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -15,7 +15,6 @@ class User(Base):
     username = Column(String(32), index=True)
     password_hash = Column(String(64))
     email = Column(String)
-    password_hash = Column(String(64))
     picture = Column(String(250))
 
     def hash_password(self, password):
@@ -42,6 +41,12 @@ class User(Base):
     	user_id = data['id']
     	return user_id
 
+class Category(Base):
+	__tablename__ = 'category'
+	id = Column(Integer,primary_key = True)
+	name = Column(String)
+
+
 class Item(Base):
 	__tablename__ = 'item'
 	id = Column(Integer, primary_key=True)
@@ -49,6 +54,10 @@ class Item(Base):
 	picture = Column(String)
 	description = Column(String)
 	price = Column(String)
+	category_id = Column(Integer, ForeignKey('category.id'))
+	category = relationship(Category)
+	user_id = Column(Integer, ForeignKey'user.id'))
+    user = relationship(User)
 	@property
 	def serialize(self):
 	    """Return object data in easily serializeable format"""

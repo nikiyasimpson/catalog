@@ -81,11 +81,6 @@ def showCatalog():
         return render_template('catalog.html', items=items, login=login_session['username'])
 
 
-@app.route('/token')
-@auth.login_required
-def get_auth_token():
-    token = g.user.generate_auth_token()
-    return jsonify({'token': token.decode('ascii')})
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -163,7 +158,8 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-    
+    token = get_auth_token()
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -197,6 +193,9 @@ def getUserID(email):
     except:
         return None
 
+def get_auth_token():
+    token = g.user.generate_auth_token()
+    return jsonify({'token': token.decode('ascii')})
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
@@ -245,6 +244,7 @@ def itemsJSON():
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
+@auth.login_required
 def newItem():
     if 'username' not in login_session:
         return redirect('/login')
@@ -279,6 +279,7 @@ def newItem():
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
+@auth.login_required
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -300,6 +301,7 @@ def editItem(item_id):
 
 # Delete an item from the catalog
 @app.route('/item/<int:item_id>/remove', methods=['GET', 'POST'])
+@auth.login_required
 def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
