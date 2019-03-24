@@ -242,6 +242,53 @@ def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
+## CATEGORY ROUTES
+# Create a new category
+@app.route('/category/new/', methods=['GET', 'POST'])
+@auth.login_required
+def newCategory():
+    if 'username' not in login_session:
+        return redirect('/login')
+    if request.method == 'POST':
+        newCategory = Category(name=request.form['name'])
+        session.add(newCategory)
+        session.commit()
+        flash('New %s Category Successfully Created' % (newCategory.name))
+        return redirect(url_for('showCatalog'))
+    else:
+        return render_template('newCategory.html')
+
+# Edit category from the catalog
+@app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
+@auth.login_required
+def editCategory(category_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    editedCategory = session.query(Category).filter_by(id=category_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedCategory.name = request.form['name']
+        session.add(editedCategory)
+        session.commit()
+        flash('Category Successfully Edited')
+        return redirect(url_for('showCatalog'))
+    else:
+        return render_template('editCategory.html', category=editedCategory)
+
+# Delete an item from the catalog
+@app.route('/category/<int:category_id>/remove', methods=['GET', 'POST'])
+def deleteCategory(category_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    categoryToDelete = session.query(Category).filter_by(id=category_id).one()
+    if request.method == 'POST':
+        session.delete(categoryToDelete)
+        session.commit()
+        flash('Category Successfully Deleted')
+        return redirect(url_for('showCatalog'))
+    else:
+        return render_template('deleteCategory.html',category=categoryToDelete)
+
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
 @auth.login_required
@@ -267,7 +314,7 @@ def newItem():
             #return redirect(url_for('uploaded_file', filename=filename))
         
         newItem = Item(name=request.form['name'], description=request.form['description'], price=request.form[
-                           'price'], picture= filename, user_id = login_session['user_id'])
+                           'price'], picture= filename, category_id = request.form['category_id'], user_id = login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash('New %s Item Successfully Created' % (newItem.name))
@@ -275,7 +322,8 @@ def newItem():
 
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('newitem.html')
+        categories = session.query(Category).all()
+        return render_template('newitem.html', categories = categories)
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
