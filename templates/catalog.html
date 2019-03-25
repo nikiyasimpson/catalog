@@ -29,10 +29,12 @@
 						<img src="static/images/{{item.picture}}" alt='{{item.name}}' class='item-photo' >
 						<p class="item_description">{{item.description}}</p>
 						<p class="item-price">${{item.price}}</p>
+						{% if item.user_id == user_id %}
 						<div class="modify-buttons">
 						<a href="{{url_for('deleteItem', item_id = item.id)}}">Remove</a>
 						<a href="{{url_for('editItem', item_id = item.id)}}">Edit</a>
 						</div>
+						{% endif %}
 
 					</div>
 				<div class="col-md-1"></div>
