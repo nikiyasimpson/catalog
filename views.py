@@ -332,8 +332,8 @@ def editItem(item_id):
 
     if request.method == 'POST':
         #Check Authorization for the user to edit the record
-        creator = editedItem.user_id
-        if creator == login_session['user_id']:
+        creator = getUserInfo(editedItem.user_id)
+        if creator.user_id == login_session['user_id']:
             if request.form['name']:
                 editedItem.name = request.form['name']
             if request.form['description']:
@@ -357,14 +357,18 @@ def editItem(item_id):
 def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
+
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
         #Check Authorization for the user to edit the record
-        creator = itemToDelete.user_id
-        if creator == login_session['user_id']:
+        creator = getUserInfo(itemToDelete.user_id)
+        if creator.user_id == login_session['user_id']:
             session.delete(itemToDelete)
             session.commit()
             flash('Item Successfully Deleted')
+            return redirect(url_for('showCatalog'))
+        else:
+            flash('You do not have authorization to delete this item.')
             return redirect(url_for('showCatalog'))
     else:
         return render_template('deleteItem.html', item=itemToDelete)
