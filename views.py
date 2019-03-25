@@ -329,22 +329,27 @@ def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
     editedItem = session.query(Item).filter_by(id=item_id).one()
+
     if request.method == 'POST':
-        if request.form['name']:
-            editedItem.name = request.form['name']
-        if request.form['description']:
-            editedItem.description = request.form['description']
-        if request.form['price']:
-            editedItem.price = request.form['price']
-        if request.form['category_id']:
-            editedItem.category_id = request.form['category_id']
-        session.add(editedItem)
-        session.commit()
-        flash('Item Successfully Edited')
-        return redirect(url_for('showCatalog'))
+        #Check Authorization for the user to edit the record
+        creator = editedItem.user_id
+        if creator == login_session['user_id']:
+            if request.form['name']:
+                editedItem.name = request.form['name']
+            if request.form['description']:
+                editedItem.description = request.form['description']
+            if request.form['price']:
+                editedItem.price = request.form['price']
+            if request.form['category_id']:
+                editedItem.category_id = request.form['category_id']
+            session.add(editedItem)
+            session.commit()
+            flash('Item Successfully Edited')
+            return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
         return render_template('edititem.html', item=editedItem, categories = categories)
+
 
 
 # Delete an item from the catalog
@@ -354,10 +359,13 @@ def deleteItem(item_id):
         return redirect('/login')
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
-        session.delete(itemToDelete)
-        session.commit()
-        flash('Item Successfully Deleted')
-        return redirect(url_for('showCatalog'))
+        #Check Authorization for the user to edit the record
+        creator = itemToDelete.user_id
+        if creator == login_session['user_id']:
+            session.delete(itemToDelete)
+            session.commit()
+            flash('Item Successfully Deleted')
+            return redirect(url_for('showCatalog'))
     else:
         return render_template('deleteItem.html', item=itemToDelete)
 
