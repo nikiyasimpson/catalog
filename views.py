@@ -78,7 +78,7 @@ def logout():
     login_session.clear()
     items = session.query(Item).order_by(asc(Item.name))
 
-    return render_template('publiccatalog.html', items=items)
+    return redirect(url_for('showCatalog'))
     
 # Show item catalog
 @app.route('/')

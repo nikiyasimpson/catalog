@@ -7,9 +7,9 @@
 		<div class="col-md-1"></div>
 	</div>
 	{% for category in categories %}
-		<h2>{{category.name}}</h2>
-		{% for item in items %}
-			{% if item.category_id == category.id : %}
+	<h2>{{category.name}}</h2>
+	{% for item in items %}
+		{% if item.category_id == category.id : %}
 			<div class="row">
 				<div class="col-md-1"></div>
 					<div class="col-md-10 item-list">
@@ -17,10 +17,12 @@
 						<img src="static/images/{{item.picture}}" alt='{{item.name}}' class='item-photo' >
 						<p class="item_description">{{item.description}}</p>
 						<p class="item-price">${{item.price}}</p>
+
 					</div>
 				<div class="col-md-1"></div>
 			</div>
+		
 		{% endif %}
-		{% endfor %}
+	{% endfor %}
 	{% endfor %}
 {% endblock %}
