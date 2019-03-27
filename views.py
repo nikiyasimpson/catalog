@@ -76,8 +76,6 @@ def showLogin():
 def logout():
     gdisconnect()
     login_session.clear()
-    items = session.query(Item).order_by(asc(Item.name))
-
     return redirect(url_for('showCatalog'))
     
 # Show item catalog
@@ -89,8 +87,6 @@ def showCatalog():
         return render_template('publiccatalog.html', items=items, categories=categories)
     else:
         return render_template('catalog.html', items=items, categories=categories, login=login_session['username'], user_id=login_session['user_id'])
-
-
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -178,20 +174,15 @@ def gconnect():
     user = getUserInfo(user_id)
     token = user.generate_auth_token(600)
     
-
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print("Successfully logged in!")
     print(token)
-    return output
+    #return output
+    return render_template('successlogin.html', login_session=login_session)
     #STEP 5 - Send back token to the client 
     #return jsonify({'token': token.decode('ascii')})
+    
+
 
 @app.route('/token')
 @auth.login_required
@@ -272,6 +263,7 @@ def itemsJSON():
 ## CATEGORY ROUTES
 # Create a new category
 @app.route('/category/new/', methods=['GET', 'POST'])
+@auth.login_required
 def newCategory():
     if 'username' not in login_session:
         return redirect('/login')
@@ -286,6 +278,7 @@ def newCategory():
 
 # Edit category from the catalog
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
+@auth.login_required
 def editCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -302,6 +295,7 @@ def editCategory(category_id):
 
 # Delete an item from the catalog
 @app.route('/category/<int:category_id>/remove', methods=['GET', 'POST'])
+@auth.login_required
 def deleteCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -316,6 +310,7 @@ def deleteCategory(category_id):
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
+@auth.login_required
 def newItem():
     if 'username' not in login_session:
         return redirect('/login')
@@ -351,6 +346,7 @@ def newItem():
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
+@auth.login_required
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -380,6 +376,7 @@ def editItem(item_id):
 
 # Delete an item from the catalog
 @app.route('/item/<int:item_id>/remove', methods=['GET', 'POST'])
+@auth.login_required
 def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')

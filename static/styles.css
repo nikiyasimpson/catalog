@@ -190,3 +190,11 @@ input[type="text"] {
 	display: block;
 	margin: 5px;
 }
+
+.loginprofile {
+	width: 150px; 
+	height: 150px;
+	border-radius: 150px;
+	-webkit-border-radius: 150px;
+	-moz-border-radius: 150px;
+}
