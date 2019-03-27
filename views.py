@@ -257,7 +257,7 @@ def gdisconnect():
 
 # JSON APIs to view Catalog Information
 
-@app.route('/api/item/<int:id>/JSON')
+@app.route('/api/item/<int:item_id>/JSON')
 @auth.login_required
 def ItemJSON(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
