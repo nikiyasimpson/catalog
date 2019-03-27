@@ -355,7 +355,7 @@ def editItem(item_id):
     if request.method == 'POST':
         #Check Authorization for the user to edit the record
         creator = getUserInfo(editedItem.user_id)
-        if creator.user_id == login_session['user_id']:
+        if creator.id == login_session['user_id']:
             if request.form['name']:
                 editedItem.name = request.form['name']
             if request.form['description']:
@@ -385,7 +385,7 @@ def deleteItem(item_id):
     if request.method == 'POST':
         #Check Authorization for the user to edit the record
         creator = getUserInfo(itemToDelete.user_id)
-        if creator.user_id == login_session['user_id']:
+        if creator.id == login_session['user_id']:
             session.delete(itemToDelete)
             session.commit()
             flash('Item Successfully Deleted')
