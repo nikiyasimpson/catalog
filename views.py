@@ -86,7 +86,8 @@ def showCatalog():
     if 'username' not in login_session:
         return render_template('publiccatalog.html', items=items, categories=categories)
     else:
-        return render_template('catalog.html', items=items, categories=categories, login=login_session['username'], user_id=login_session['user_id'])
+        return render_template('catalog.html', items=items, categories=categories, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 
 @app.route('/gconnect', methods=['POST'])

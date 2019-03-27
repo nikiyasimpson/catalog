@@ -5,8 +5,10 @@
 		</a>
 	</div>
 	<div class="col-md-2 text-right">
+
 		<p>
-				{% if login %}
+				{% if user_id %}
+					<img class='loginprofile' src="{{photo}}" alt="profile picture" />
 					<p>Logged in as {{login}}</p>
 					<a href="{{url_for('logout')}}">Log Out</a></p>
 				{% else %}
