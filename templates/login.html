@@ -7,11 +7,13 @@
       <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 
       <script>
+
+      var auth2;
           function start() {
             gapi.load('auth2', function() {
               auth2 = gapi.auth2.init({
                 client_id: '461096371427-5tlllkrhngbq2pto2slnskfl895b4gmh.apps.googleusercontent.com',
-                //scope: 'additional_scope'
+                scope: 'profile'
               });
             });
           }

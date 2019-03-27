@@ -34,9 +34,11 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+## Create Flask App and configure uploads folder
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# only allow 4MB
+
+# only allow up to 4MB image upload to server
 app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
 
 CLIENT_ID = json.loads(
@@ -44,17 +46,24 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "Item Catalog"
 
 @auth.verify_password
-def verify_password(username_or_token, password):
+def verify_password(username_or_token,password):
+    print("Looking for user %s" % username_or_token)
     #Try to see if it's a token first
     user_id = User.verify_auth_token(username_or_token)
     if user_id:
         user = session.query(User).filter_by(id = user_id).one()
     else:
         user = session.query(User).filter_by(username = username_or_token).first()
-        if not user or not user.verify_password(password):
+        if not user:
             return False
     g.user = user
     return True
+
+   
+
+@auth.error_handler
+def auth_error():
+    return "Access Denied"
 
 @app.route('/login')
 def showLogin():
@@ -93,6 +102,7 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
+    print("Step 1 - Complete, received auth code %s" % code)
 
     try:
         # Upgrade the authorization code into a credentials object
@@ -110,38 +120,40 @@ def gconnect():
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
+
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is used for the intended user.
-    gplus_id = credentials.id_token['sub']
-    if result['user_id'] != gplus_id:
-        response = make_response(
-            json.dumps("Token's user ID doesn't match given user ID."), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+    ## Verify that the access token is used for the intended user.
+    #gplus_id = credentials.id_token['sub']
+    #if result['user_id'] != gplus_id:
+    #    response = make_response(
+    #       json.dumps("Token's user ID doesn't match given user ID."), 401)
+    #    response.headers['Content-Type'] = 'application/json'
+    #   return response
 
-    # Verify that the access token is valid for this app.
-    if result['issued_to'] != CLIENT_ID:
-        response = make_response(
-            json.dumps("Token's client ID does not match app's."), 401)
-        print("Token's client ID does not match app's.")
-        response.headers['Content-Type'] = 'application/json'
-        return response
+    ## Verify that the access token is valid for this app.
+    #if result['issued_to'] != CLIENT_ID:
+    #    response = make_response(
+    #        json.dumps("Token's client ID does not match app's."), 401)
+    #    print("Token's client ID does not match app's.")
+    #    response.headers['Content-Type'] = 'application/json'
+    #    return response
 
-    stored_access_token = login_session.get('access_token')
-    stored_gplus_id = login_session.get('gplus_id')
-    if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+    #stored_access_token = login_session.get('access_token')
+    #stored_gplus_id = login_session.get('gplus_id')
+    #if stored_access_token is not None and gplus_id == stored_gplus_id:
+    #    response = make_response(json.dumps('Current user is already connected.'),
+    #                             200)
+    #    response.headers['Content-Type'] = 'application/json'
+    #    return response
 
     # Store the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
+    print("Step 2 Complete! Access Token : %s " % credentials.access_token)
 
     # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -154,11 +166,17 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+
+
+
     # See if a user exists, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
+    
+    user = getUserInfo(user_id)
+    token = user.generate_auth_token(600)
     
 
     output = ''
@@ -167,10 +185,20 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print("Successfully logged in!")
+    print(token)
     return output
+    #STEP 5 - Send back token to the client 
+    #return jsonify({'token': token.decode('ascii')})
+
+@app.route('/token')
+@auth.login_required
+def get_auth_token():
+    token = g.user.generate_auth_token()
+    return jsonify({'token': token.decode('ascii')})
+
 
 # User Helper Functions
 def createUser(login_session):
@@ -194,9 +222,7 @@ def getUserID(email):
     except:
         return None
 
-def get_auth_token():
-    token = g.user.generate_auth_token()
-    return jsonify({'token': token.decode('ascii')})
+
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
