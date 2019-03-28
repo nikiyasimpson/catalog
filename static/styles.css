@@ -3,11 +3,11 @@
 }
 
 h1 {
-	font-family: "Helvetica Neue Light", Roboto, Helvetica, Arial, sans-serif;
+	font-family: 'Quattrocento Sans', sans-serif;
 	font-size: 50px;
-	color: #51453B;
 	line-height: 60px;
 	font-weight: 300;
+	
 }
 
 h2 {
@@ -36,16 +36,11 @@ h3 {
  	line-height: 24px;
  }
 
- a {
- 	font-size: 14px;
- 	color: #0093B9;
- 	line-height: 17px;
- }
 .padding-top {
 	padding-top: 30px;
 }
 .padding-bottom {
-	padding-bottom: 30px;
+	padding-bottom: 10px;
 }
 .margin-right {
 	margin-right: 30px;
@@ -71,9 +66,7 @@ h3 {
 	border-color: #aaaaaa;
 	color: red;
 }
-.glyphicon {
-	margin-right: 10px;
-}
+
 .top-menu {
 	padding-top: 30px;
 	padding-bottom: 30px;
@@ -92,19 +85,18 @@ h3 {
 .divider {
 	height: 15px;
 }
-.divider.blue {
-	background-color: #42C3C9;
-}
+
 .divider.green {
 	background-color: #9FB80A;
 }
 .banner.main {
 	height: 150px;
 	background: url('/static/furniture.jpg');
-	opacity: 0.3;
 	background-position: right;
 	background-repeat: no-repeat;
 	background-size: cover;
+	text-align: center;
+	opacity: 0.8;
 }
 .banner.menu {
 	height: 150px;
@@ -114,10 +106,14 @@ h3 {
 	height: 150px;
 	background-color: #A6E8EB;
 }
-.banner h1 {
+.banner.main h1 {
 	margin: 45px 0;
-	color: black;
-	font-size: 3em;
+	padding: 45px;
+	color: white;
+	font-weight: 400;
+	text-shadow: 2px 2px black;
+	text-transform: uppercase;
+	opacity: 1;
 }
  .item-list {
  	background-color: #FFF;
@@ -194,14 +190,22 @@ input[type="text"] {
 	-moz-border-radius: 150px;
 }
 
+.smallprofilepic {
+	width: 30px;
+	height: 30px;
+	border-radius: 30px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	margin-bottom: 10px;
+
+}
+
 .scrolling-wrapper {
 	display: flex;
 	flex-wrap: nowrap;
 	overflow-x: auto;
 	-webkit-overflow-scrolling: touch;
-
-	
-
+	align-items:center;
 }
 
 .scrolling-wrapper p {

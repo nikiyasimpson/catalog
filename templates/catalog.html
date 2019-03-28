@@ -2,19 +2,6 @@
 {% block content %}
 {% include "header.html" %}
 
-		<div class="col-md-10 padding-none">
-				<a href="{{url_for('newCategory')}}">
-						<button class="btn btn-default" id="new-restaurant">
-							<span aria-hidden="true"></span>Add Category
-						</button>
-					</a>
-			<a href="{{url_for('newItem')}}">
-				<button class="btn btn-default" id="new-restaurant">
-					<span aria-hidden="true"></span>Add Item
-				</button>
-			</a>
-		</div>
-	</div>
 	{% for category in categories %}
 	<h2>{{category.name}}</h2>
 	<div class="scrolling-wrapper">
