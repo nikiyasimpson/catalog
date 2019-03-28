@@ -2,7 +2,16 @@
 <div class="banner main">		
 		<h1>Top Furniture Catalog</h1>
 </div>
-
+<div class="row login-area">
+				{% if user_id %}
+					<p class='padding-bottom'>
+						<img class='smallprofilepic' src="{{photo}}" alt="profile picture" />
+						Logged in as {{login}}</p>
+					<p><a href="{{url_for('logout')}}">Log Out</a></p>
+				{% else %}
+					<p><a href="{{url_for('showLogin')}}">Login</a></p>	
+			{% endif %}
+</div>
 <div class="row top-menu col-md-12">
 		<div class="text-left">
 				<a href="{{url_for('newCategory')}}">
@@ -16,20 +25,6 @@
 				</button>
 			</a>
 		</div>
-			<div class="col-md-7 text-right">
-			
-					<p>
-							{% if user_id %}
-								<img class='smallprofilepic' src="{{photo}}" alt="profile picture" />
-								<p class='padding-bottom'>Logged in as {{login}}</p>
-								<a href="{{url_for('logout')}}">Log Out</a></p>
-							{% else %}
-								<a href="{{url_for('showLogin')}}">Login</a></p>	
-						{% endif %}
-				</div>
-		
-	
-	
 </div>
 
 <div class = 'flash'>
