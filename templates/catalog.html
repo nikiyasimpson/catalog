@@ -1,111 +1,38 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
+<span id="noOfCategories"></span>
 
 	{% for category in categories %}
 	<h2>{{category.name}}</h2>
-	<div class="scrolling-wrapper">
-	<div id="cardContainer">
-	{% for item in items %}
-		{% if item.category_id == category.id : %}
-			<div class="row card">
-					<div class="item-list">
+
+	<div class="container-fluid">
+			<div class="row flex-row flex-nowrap category-section">
+			{% for item in items %}
+				{% if item.category_id == category.id : %}
+					<div class="card card-block">
+					<img src="static/images/{{item.picture}}" alt='{{item.name}}' class='card-img-top item-photo' >
+					<div class="card-img-overlay">
 						<h3>{{item.name}}</h3>
-						<img src="static/images/{{item.picture}}" alt='{{item.name}}' class='item-photo' >
-						<p class="item_description">{{item.description}}</p>
 						<p class="item-price">${{item.price}}</p>
-						{% if item.user_id == user_id %}
-						<div class="modify-buttons">
-						<a href="{{url_for('deleteItem', item_id = item.id)}}">Remove</a>
-						<a href="{{url_for('editItem', item_id = item.id)}}">Edit</a>
-						</div>
-						{% endif %}
+					
 					</div>
-		
+					{% if item.user_id == user_id %}
+					<div class="modify-buttons card-block">
+					<a href="{{url_for('deleteItem', item_id = item.id)}}"><button class="btn btn-danger text-white">Remove</button></a>
+					<a href="{{url_for('editItem', item_id = item.id)}}"><button class="btn btn-success text-white">Edit</button></a>
+					</div>
+					{% endif %}
+					<div class="card-footer bg-primary text-white">
+						<p>{{item.description}}</p>
+					</div>
+					</div>
+				{% endif %}
+			{% endfor %}
 			</div>
-		{% endif %}
-	{% endfor %}
-	</div>
-	<div class="arrows"><button class="left-arrow arrow hidden">
-		<
-	</button>
-	<button class="right-arrow arrow">
-		>
-	</button>
-	</div>
-	</div>
+			</div>
+
+	
+
 	{% endfor %}
 {% endblock %}
-<script>
-const scrollDuration = 300;
-
-const leftArrow = $(".left-arrow");
-const rightArrow = $(".right-arrow")
-
-let itemsLength = $('.card').length;
-let itemSize = $('.card').outerWidth(true);
-const arrowMargin = 20;
-
-// get wrapper width
-var getWrapperSize = function() {
-	return $('.scrolling-wrapper').outerWidth();
-}
-var wrapperSize = getWrapperSize();
-// the wrapper is responsive
-$(window).on('resize', function() {
-	wrapperSize = getWrapperSize();
-});
-
-// size of the visible part of the menu is equal as the wrapper size 
-var visibleSize = wrapperSize;
-
-// get total width of all menu items
-var getSize = function() {
-	return itemsLength * itemSize;
-};
-var catalogSize = getSize();
-// get how much of menu is invisible
-var invisibleSize = catalogSize - wrapperSize;
-
-// get how much have we scrolled to the left
-var getPosition = function() {
-	return $('#cardContainer').scrollLeft();
-};
-
-// finally, what happens when we are actually scrolling the menu
-$('#cardContainer').on('scroll', function() {
-
-	// get how much of menu is invisible
-	invisibleSize = catalogSize - wrapperSize;
-	// get how much have we scrolled so far
-	var catalogPosition = getPosition();
-
-	var catalogEndOffset = invisibleSize - arrowMargin;
-
-	// show & hide the paddles 
-	// depending on scroll position
-	if (catalogPosition <= arrowMargin) {
-		$(leftArrow).addClass('hidden');
-		$(rightArrow).removeClass('hidden');
-	} else if (catalogPosition < catalogEndOffset) {
-		// show both paddles in the middle
-		$(leftArrow).removeClass('hidden');
-		$(rightArrow).removeClass('hidden');
-	} else if (catalogPosition >= catalogEndOffset) {
-		$(leftArrow).removeClass('hidden');
-		$(rightArrow).addClass('hidden');
-}
-
-});
-
-// scroll to left
-$(rightArrow).on('click', function() {
-	$('.menu').animate( { scrollLeft: invisibleSize}, scrollDuration);
-});
-
-// scroll to right
-$(leftArrow).on('click', function() {
-	$('.menu').animate( { scrollLeft: '0' }, scrollDuration);
-});
-
-</script>

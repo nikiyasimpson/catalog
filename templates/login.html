@@ -5,7 +5,9 @@
       <script language="JavaScript" type="text/javascript" src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
       <script language="JavaScript" type="text/javascript" src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async></script>
       <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-
+      <link href="https://fonts.googleapis.com/css?family=Quattrocento+Sans" rel="stylesheet" type='text/css'>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <script>
 
       var auth2;
@@ -19,9 +21,14 @@
           }
         </script>
     </head>
-    <body>  
-    <!-- GOOGLE SIGN IN-->
-      <button id="signinButton">Sign in with Google</button>
+    <body> 
+      <div class="container">
+          <div class="banner main">		
+              <h1>Top Furniture Catalog</h1>
+          </div>
+          <h2>Log into our system using your Google account.</h2>
+          <!-- GOOGLE SIGN IN-->
+      <button id="signinButton" class='btn btn-primary'>Sign in with Google</button>
       <script>
         $('#signinButton').click(function() {
           function signInCallback(authResult){
@@ -53,5 +60,6 @@
         });
       </script>
       <div id="result"></div>
+      </div>
       </body>
 </html>

@@ -25,7 +25,6 @@ h3 {
  p {
  	font-family: "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
  	font-size: 16px;
- 	color: #7B7573;
  	line-height: 24px;
  	font-weight: 400;
  }
@@ -167,11 +166,9 @@ input[type="text"] {
 }
 
 .item-photo {
-	width: 100px;
+	width: 50%;
+	margin: 80px auto 20px auto;
 	height: auto;
-	float: left;
-	display:block;
-	padding-right: 10px;
 }
 
 .item-description {
@@ -223,27 +220,26 @@ input[type="text"] {
 	align-items:center;
 }
 
+.category-section {
+	margin-bottom: 30px;
+	-webkit-overflow-scrolling: touch;
+}
 
 .scrolling-wrapper p {
 	white-space: normal;
 }
 
-
 .card {
-	display:inline-block;
 	width: 300px;
-	margin: 20px;
-	padding: 10px;
-	flex: 0 0 auto;
+	margin: 0 10px 0 10px;
+	display: inline-block;
 }
 
-.card:hover {
-	border: solid #f0f0f0 5px;
-	border-radius: 5px;
-	 padding: 20px;
-}
-
-
+.card-footer {
+	  margin-top: auto;
+	  min-height: 100px;
+	}
+  
 .arrow {
 	position: absolute;
 	top: 0;
@@ -264,12 +260,13 @@ input[type="text"] {
 }
 
 
-#cardContainer {
-	height: 300px;
-	white-space:nowrap;
-	overflow-x:auto;
-	overflow-y:hidden;
+.cardContainer {
 	-webkit-overflow-scrolling: touch;
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x:hidden;
+	overflow-y:hidden;
+	
 
 
 }
