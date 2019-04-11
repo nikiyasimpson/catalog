@@ -12,19 +12,18 @@
 					<p><a href="{{url_for('showLogin')}}">Login</a></p>	
 			{% endif %}
 </div>
-<div class="row top-menu col-md-12">
-		<div class="text-left">
-				<a href="{{url_for('newCategory')}}">
-						<button class="btn btn-default" id="new-category">
-							<span aria-hidden="true"></span>Add Category
-						</button>
-					</a>
-			<a href="{{url_for('newItem')}}">
-				<button class="btn btn-default" id="new-item">
+
+<div class="btn-group padding-bottom">
+		<a href="{{url_for('newCategory')}}">
+				<button class="btn btn-primary" id="new-category">
+					<span aria-hidden="true"></span>Add Category
+				</button>
+		</a>
+		<a href="{{url_for('newItem')}}">
+				<button class="btn btn-primary" id="new-item">
 					<span aria-hidden="true"></span>Add Item
 				</button>
-			</a>
-		</div>
+		</a>
 </div>
 
 <div class = 'flash'>

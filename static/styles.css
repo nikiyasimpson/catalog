@@ -1,3 +1,5 @@
+/* Basic DOM Elements Styling */
+
 * {
     font-family: 'Quattrocento Sans', sans-serif;
 }
@@ -7,12 +9,11 @@ h1 {
 	font-size: 50px;
 	line-height: 60px;
 	font-weight: 300;
-	
 }
 
 h2 {
 	font-size: 24px;
-	color: #42C3C9;
+	color: #4A4A4A;
 	line-height: 29px;
 }
 
@@ -22,18 +23,18 @@ h3 {
 	color: #4A4A4A;
 	line-height: 23px;
 }
- p {
- 	font-family: "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;
- 	font-size: 16px;
+
+p {
+ 	font-size: 14px;
  	line-height: 24px;
- 	font-weight: 400;
  }
 
- strong {
- 	font-size: 16px;
- 	color: #7B7573;
- 	line-height: 24px;
- }
+input[type="text"] {
+	border-bottom: solid black;
+	margin-bottom: 20px;
+}
+
+/*CSS Classes */
 
 .padding-top {
 	padding-top: 30px;
@@ -47,15 +48,15 @@ h3 {
 .padding-none {
 	padding: 0;
 }
+
+/*Heading and Banner */
+
 .btn {
-	padding: 20px;
-	margin: 0;
-	border-color: #9FB80A;
-	border-width: 2px;
-	color: #9FB80A;;
+	margin-right: 5px;
 }
+
 .btn:hover {
-	border-color: #9FB80A;
+	border-color: #aaaaaa;
 }
 .btn.delete {
 	border-color: #aaaaaa;
@@ -137,6 +138,11 @@ h3 {
 	text-align: right;
 	float:right;
 }
+
+.text-center {
+	text-align: center;
+}
+
 .creator img {
 	width: 100px;
 	border-radius: 50%;
@@ -160,10 +166,6 @@ h3 {
 
 }
 
-input[type="text"] {
-	border-bottom: solid black;
-	margin-bottom: 20px;
-}
 
 .item-photo {
 	width: 50%;
@@ -179,6 +181,7 @@ input[type="text"] {
 .modify-buttons {
 	display: block;
 	margin: 5px;
+	margin-bottom: 10px;
 }
 
 .loginprofile {
