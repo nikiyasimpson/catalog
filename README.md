@@ -8,7 +8,7 @@ The following is a Flask full stack application demonstrating authentication usi
 [Libraries for File Upload](http://flask.pocoo.org/docs/1.0/patterns/fileuploads/)
 
 ##References
-
+[Flexbox Solution for Horizontal Scrolling](https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6)
 
 ##Author
 Nikiya M. Simpson
