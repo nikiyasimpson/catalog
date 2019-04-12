@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<a href="{{url_for('newCategory')}}"><button class="btn btn-primary text-white">Add Category</button></a>
+
+	{% for category in categories %}
+    <h2>{{category.name}}</h2>
+    <div class="modify-buttons card-block">
+            <a href="{{url_for('deleteCategory', category_id = category.id)}}"><button class="btn btn-primary text-white">Remove</button></a>
+            <a href="{{url_for('editCategory', category_id = category.id)}}"><button class="btn btn-primary text-white">Edit</button></a>
+    </div>
+	{% endfor %}
+{% endblock %}

@@ -89,6 +89,16 @@ def showCatalog():
         return render_template('catalog.html', items=items, categories=categories, login=login_session['username'],
         user_id= login_session['user_id'], photo=login_session['picture'])
 
+# Show catalog categories
+@app.route('/categories')
+@auth.login_required
+def showCategories():
+    categories = session.query(Category).order_by(asc(Category.name))
+    if 'username' not in login_session:
+        return redirect('/login')
+    else:
+        return render_template('category.html', categories=categories)
+        
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -124,30 +134,6 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    ## Verify that the access token is used for the intended user.
-    #gplus_id = credentials.id_token['sub']
-    #if result['user_id'] != gplus_id:
-    #    response = make_response(
-    #       json.dumps("Token's user ID doesn't match given user ID."), 401)
-    #    response.headers['Content-Type'] = 'application/json'
-    #   return response
-
-    ## Verify that the access token is valid for this app.
-    #if result['issued_to'] != CLIENT_ID:
-    #    response = make_response(
-    #        json.dumps("Token's client ID does not match app's."), 401)
-    #    print("Token's client ID does not match app's.")
-    #    response.headers['Content-Type'] = 'application/json'
-    #    return response
-
-    #stored_access_token = login_session.get('access_token')
-    #stored_gplus_id = login_session.get('gplus_id')
-    #if stored_access_token is not None and gplus_id == stored_gplus_id:
-    #    response = make_response(json.dumps('Current user is already connected.'),
-    #                             200)
-    #    response.headers['Content-Type'] = 'application/json'
-    #    return response
-
     # Store the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
     print("Step 2 Complete! Access Token : %s " % credentials.access_token)
@@ -163,9 +149,6 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-
-
-
     # See if a user exists, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
@@ -178,19 +161,8 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     print("Successfully logged in!")
     print(token)
-    #return output
     return render_template('successlogin.html', login_session=login_session)
-    #STEP 5 - Send back token to the client 
-    #return jsonify({'token': token.decode('ascii')})
     
-
-
-@app.route('/token')
-@auth.login_required
-def get_auth_token():
-    token = g.user.generate_auth_token()
-    return jsonify({'token': token.decode('ascii')})
-
 
 # User Helper Functions
 def createUser(login_session):
