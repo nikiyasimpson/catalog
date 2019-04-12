@@ -2,28 +2,28 @@
 <div class="banner main">		
 		<h1>Top Furniture Catalog</h1>
 </div>
-<div class="row login-area">
-				{% if user_id %}
-					<p class='padding-bottom'>
-						<img class='smallprofilepic' src="{{photo}}" alt="profile picture" />
-						Logged in as {{login}}</p>
-					<p><a href="{{url_for('logout')}}">Log Out</a></p>
-				{% else %}
-					<p><a href="{{url_for('showLogin')}}">Login</a></p>	
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+		  <div class="navbar-nav">
+			<a class="nav-item nav-link active" href="{{url_for('showCatalog')}}">Home</a>
+			{% if user_id %}
+				<a class="nav-item nav-link" href="{{url_for('showCategories')}}">Category Information</a>
+				<a class="nav-item nav-link" href="{{url_for('newItem')}}">Add New Item</a>
+				<a class="nav-item nav-link" href="{{url_for('logout')}}">Log Out</a>
+			{% else %}
+				<a class="nav-item nav-link" href="{{url_for('showLogin')}}">Login</a>
 			{% endif %}
-</div>
-
-<div class="btn-group padding-bottom">
-		<a href="{{url_for('showCategories')}}">
-				<button class="btn btn-primary" id="new-category">
-					<span aria-hidden="true"></span>Category Information
-				</button>
-		</a>
-		<a href="{{url_for('newItem')}}">
-				<button class="btn btn-primary" id="new-item">
-					<span aria-hidden="true"></span>Add Item
-				</button>
-		</a>
+		  </div>
+		</div>
+</nav>
+<div class="row login-area padding-top padding-bottom">
+		{% if user_id %}
+			<p><img class='smallprofilepic' src="{{photo}}" alt="profile picture" />
+				Logged in as {{login}}</p>	
+		{% endif %}
 </div>
 
 <div class = 'flash'>

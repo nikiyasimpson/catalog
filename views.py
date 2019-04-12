@@ -59,8 +59,6 @@ def verify_password(username_or_token,password):
     g.user = user
     return True
 
-   
-
 @auth.error_handler
 def auth_error():
     return "Access Denied"
@@ -86,7 +84,7 @@ def showCatalog():
     if 'username' not in login_session:
         return render_template('publiccatalog.html', items=items, categories=categories)
     else:
-        return render_template('catalog.html', items=items, categories=categories, login=login_session['username'],
+        return render_template('catalog.html', items=items, categories=categories,login=login_session['username'],
         user_id= login_session['user_id'], photo=login_session['picture'])
 
 # Show catalog categories
@@ -97,7 +95,8 @@ def showCategories():
     if 'username' not in login_session:
         return redirect('/login')
     else:
-        return render_template('category.html', categories=categories)
+        return render_template('category.html', categories=categories, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
         
 
 @app.route('/gconnect', methods=['POST'])
@@ -162,7 +161,6 @@ def gconnect():
     print("Successfully logged in!")
     print(token)
     return render_template('successlogin.html', login_session=login_session)
-    
 
 # User Helper Functions
 def createUser(login_session):
@@ -247,7 +245,8 @@ def newCategory():
         flash('New %s Category Successfully Created' % (newCategory.name))
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('newCategory.html')
+        return render_template('newCategory.html', login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 # Edit category from the catalog
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -264,7 +263,8 @@ def editCategory(category_id):
         flash('Category Successfully Edited')
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('editCategory.html', category=editedCategory)
+        return render_template('editCategory.html', category=editedCategory, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 # Delete an item from the catalog
 @app.route('/category/<int:category_id>/remove', methods=['GET', 'POST'])
@@ -279,7 +279,8 @@ def deleteCategory(category_id):
         flash('Category Successfully Deleted')
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('deleteCategory.html',category=categoryToDelete)
+        return render_template('deleteCategory.html',category=categoryToDelete, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
@@ -315,7 +316,8 @@ def newItem():
         return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('newitem.html', categories = categories)
+        return render_template('newitem.html', categories = categories, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
@@ -343,7 +345,8 @@ def editItem(item_id):
             return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('edititem.html', item=editedItem, categories = categories)
+        return render_template('edititem.html', item=editedItem, categories = categories, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 
 
@@ -367,7 +370,8 @@ def deleteItem(item_id):
             flash('You do not have authorization to delete this item.')
             return redirect(url_for('showCatalog'))
     else:
-        return render_template('deleteItem.html', item=itemToDelete)
+        return render_template('deleteItem.html', item=itemToDelete, login=login_session['username'],
+        user_id= login_session['user_id'], photo=login_session['picture'])
 
 def allowed_file(filename):
     return '.' in filename and \
