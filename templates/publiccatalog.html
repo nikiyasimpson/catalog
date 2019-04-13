@@ -1,6 +1,5 @@
 {% extends "main.html" %}
 {% block content %}
-{% include "header.html" %}
 	{% for category in categories %}
 	<h2>{{category.name}}</h2>
 	<div class="container">
@@ -21,6 +20,5 @@
 	{% endfor %}
 	</div>
 	</div>
-	
 	{% endfor %}
 {% endblock %}
