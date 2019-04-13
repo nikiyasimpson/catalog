@@ -1,13 +1,4 @@
-{% extends "main.html" %}
-{% block content %}
-{% include "header.html" %}
-	<div class="row padding-top padding-bottom">
-		<div class="col-md-1"></div>
-	
-		<div class="col-md-1"></div>
-    </div>
+<div class="text-center">
     <h1>Welcome, {{login_session['username']}}!</h1>
     <img class='loginprofile' src= "{{login_session['picture']}}" alt='Profile picture' >
-    
-    
-{% endblock %}
+  </div>

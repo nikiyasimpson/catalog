@@ -1,6 +1,5 @@
 {% extends "main.html" %}
 {% block content %}
-{% include "header.html" %}
 	<div class="row divider green">
 		<div class="col-md-12"></div>
 	</div>
@@ -16,13 +15,11 @@
 					<label for="name">Name:</label>
                     <input type ="text" class="form-control" name="name" value="{{category.name }}">
 					<div class="padding-bottom"></div>
-					<button type="submit" class="btn btn-default" id="submit" type="submit">
-					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Save</button>
+					<button type="submit" class="btn btn-primary" id="submit" type="submit">Save</button>
 				</div>
             </form>
             <a href = "{{url_for('showCatalog')}}">
-                    <button class="btn btn-default delete">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Cancel</button>
+                    <button class="btn btn-primary">Cancel</button>
             </a>
 		</div>
 	</div>
