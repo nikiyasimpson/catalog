@@ -316,7 +316,7 @@ def newItem():
         return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('newitem.html', categories = categories, login=login_session['username'],
+        return render_template('newItem.html', categories = categories, login=login_session['username'],
         user_id= login_session['user_id'], photo=login_session['picture'])
 
 # Edit an item from the catalog
@@ -325,8 +325,8 @@ def newItem():
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
+        
     editedItem = session.query(Item).filter_by(id=item_id).one()
-
     if request.method == 'POST':
         #Check Authorization for the user to edit the record
         creator = getUserInfo(editedItem.user_id)
@@ -345,9 +345,7 @@ def editItem(item_id):
             return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('edititem.html', item=editedItem, categories = categories, login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
-
+        return render_template('editItem.html', item=editedItem, categories = categories, login=login_session['username'], user_id= login_session['user_id'], photo=login_session['picture'])
 
 
 # Delete an item from the catalog
@@ -370,8 +368,7 @@ def deleteItem(item_id):
             flash('You do not have authorization to delete this item.')
             return redirect(url_for('showCatalog'))
     else:
-        return render_template('deleteItem.html', item=itemToDelete, login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('deleteItem.html', item=itemToDelete, login=login_session['username'], user_id= login_session['user_id'], photo=login_session['picture'])
 
 def allowed_file(filename):
     return '.' in filename and \

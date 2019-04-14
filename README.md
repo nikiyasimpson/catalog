@@ -9,6 +9,7 @@ The following is a Flask full stack application demonstrating authentication usi
 
 ##References
 [Flexbox Solution for Horizontal Scrolling](https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6)
+[Card Hover Effects](https://codepen.io/jasonheecs/pen/GNNwpZ)
 
 ##Author
 Nikiya M. Simpson

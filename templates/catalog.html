@@ -1,10 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
-	{% for category in categories %}
+<div class="container">
+{% for category in categories %}
 	<h2>{{category.name}}</h2>
 
-	<div class="container">
-			<div class="category-section">
+		<div class="category-section">
 			{% for item in items %}
 				{% if item.category_id == category.id : %}
 					<div class="card card-block text-center">
@@ -12,25 +12,34 @@
 					<div class="card-img-overlay">
 						<h3>{{item.name}}</h3>
 						<p class="item-price">${{item.price}}</p>
+					</div>
 					
-					</div>
-					{% if item.user_id == user_id %}
-					<div class="modify-buttons card-block">
-					<a href="{{url_for('deleteItem', item_id = item.id)}}"><button class="btn btn-primary text-white">Remove</button></a>
-					<a href="{{url_for('editItem', item_id = item.id)}}"><button class="btn btn-primary text-white">Edit</button></a>
-					</div>
-					{% endif %}
 					<div class="card-footer bg-dark text-white">
 						<p>{{item.description}}</p>
+
+						{% if item.user_id == user_id : %}
+						<div class="modify-buttons">
+						<a href="{{ url_for('deleteItem', item_id = item.id) }}" class="btn btn-primary">Remove</a>
+						<a href="{{ url_for('editItem', item_id = item.id) }} " class="btn btn-primary">Edit</a>
+						</div>
+	
+						{% endif %}
+					
 					</div>
+
+			
+				
 					</div>
+
+				
+					
+					
 				{% endif %}
+				
 			{% endfor %}
 			</div>
-			</div>
+
 			<hr />
-
-	
-
 	{% endfor %}
+</div>
 {% endblock %}

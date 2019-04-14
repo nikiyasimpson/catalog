@@ -10,7 +10,7 @@
 </div>
 	{% for category in categories %}
     <h2>{{category.name}}</h2>
-    <div class="modify-buttons card-block">
+    <div class="modify-buttons">
             <a href="{{url_for('deleteCategory', category_id = category.id)}}"><button class="btn btn-primary text-white">Remove</button></a>
             <a href="{{url_for('editCategory', category_id = category.id)}}"><button class="btn btn-primary text-white">Edit</button></a>
     </div>
