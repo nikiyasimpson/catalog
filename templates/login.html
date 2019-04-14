@@ -23,15 +23,15 @@
     </head>
     <body> 
       <div class="container">
-          <div class="banner main">		
+          <div class="jumbotron">		
               <h1>Top Furniture Catalog</h1>
           </div>
-          <div class='center'>
-          <h2>Log into our system using your Google account.</h2>
+          <h2 class="text-center">Log into our system using your Google account.</h2>
+          <div class='center-items'>
           <!-- GOOGLE SIGN IN-->
-      <button id="signinButton" class='btn btn-primary'>Sign in with Google</button>
-      <script>
-        $('#signinButton').click(function() {
+          <button id="signinButton" class='btn btn-primary'>Sign in with Google</button>
+          <script>
+          $('#signinButton').click(function() {
           function signInCallback(authResult){
             if (authResult['code']){
               $('#signinButton').attr('style', 'display: none');
@@ -43,7 +43,7 @@
                 },
                 contentType: 'application/octet-stream; charset=utf-8',
                 success:function(result){
-                  $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+                  $('#result').html("<h4 class='text-center'>Login Successful!</h4>"+ result + "<p class='text-center'>Redirecting...</p>")
                        setTimeout(function() {
                         window.location.href = "/";
                        }, 2000);
@@ -61,6 +61,7 @@
         });
       </script>
       <div id="result"></div>
+      </div>
       </div>
       </body>
 </html>

@@ -8,13 +8,16 @@
     </div>
     <hr />
 </div>
-	{% for category in categories %}
-    <h2>{{category.name}}</h2>
-    <div class="modify-buttons">
+<div class="category-section">
+    {% for category in categories %}
+    <div class="card padding-top padding-bottom">
+    <h2 class="text-center">{{category.name}}</h2>
+    <div class="modify-buttons center-items">
             <a href="{{url_for('deleteCategory', category_id = category.id)}}"><button class="btn btn-primary text-white">Remove</button></a>
             <a href="{{url_for('editCategory', category_id = category.id)}}"><button class="btn btn-primary text-white">Edit</button></a>
     </div>
-    <hr />
+</div>
     {% endfor %}
+</div>
 </div>
 {% endblock %}
