@@ -1,8 +1,7 @@
 {% extends "main.html" %}
 {% block content %}
-	<h2>New Furniture Item</h1>
-	<div class="row">
-		<div class="col-md-6 col-md-offset-1 padding-top">
+	<h2 class="text-center">New Furniture Item</h1>
+	<div class="row center-items">
 			<form action="{{url_for('newItem')}}" method = "post" enctype= "multipart/form-data">
 				<div class="form-group">
 				<label for="name">Name:</label>
@@ -11,22 +10,28 @@
                 <input type ="text" class="form-control" maxlength="100" name="description">
                 <label for="price">Price:</label>
                 <input type ="text" class="form-control" maxlength="100" name="price">
-                <label for="picture">Picture:</label>
-                <input type="file" id="picture" name="picture" accept="image/png, image/jpeg">
-                <div class="padding-bottom"></div>
+                <div class="padding-top padding-bottom">
+                    <label for="picture">Picture:</label>
+                    <input type="file" id="picture" name="picture" accept="image/png, image/jpeg">
+                </div>
+                <div class="padding-bottom">
+                <label for="category_id">Select Furniture Category:</label>
                 <select name="category_id" method="GET" action="/">
                     {% for category in categories %}
                     <option value= "{{category.id}}" SELECTED>{{category.name}}</option>"
                     {% endfor %}
                 </select>
-				<button type="submit" class="btn btn-primary" id="submit" type="submit" value="Upload"></span>Create</button>
+                </div>
+                <div class="center-items">
+                    <button type="submit" class="btn btn-primary" id="submit" type="submit" value="Upload"></span>Create</button>
+                </div>
 				</div>
             </form>
-            <a href = "{{url_for('showCatalog')}}">
-                    <button class="btn btn-primary">Cancel</button>
-            </a>
-		</div>
     </div>
+    <div class="center-items">
+        <a href = "{{url_for('showCatalog')}}" class="btn btn-primary">Cancel</a>
+    </div>
+   
     <script language="JavaScript" type="text/javascript">
         let selectedFile;
         $('picture').change(function() {

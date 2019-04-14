@@ -13,4 +13,4 @@ The following is a Flask full stack application demonstrating authentication usi
 
 ##Author
 Nikiya M. Simpson
-Udacity, Full Stack Web Development Program Student
+Udacity, Full Stack Web Development Program Student, 2019

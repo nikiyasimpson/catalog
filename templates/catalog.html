@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
 {% for category in categories %}
-	<h2>{{category.name}}</h2>
+	<h2 class="text-center">{{category.name}}</h2>
 
 		<div class="category-section">
 			{% for item in items %}
@@ -21,6 +21,11 @@
 						<div class="modify-buttons">
 						<a href="{{ url_for('deleteItem', item_id = item.id) }}" class="btn btn-primary">Remove</a>
 						<a href="{{ url_for('editItem', item_id = item.id) }} " class="btn btn-primary">Edit</a>
+						</div>
+						{% else %}
+						<div class="creator padding-top">
+							<img src="{{item.user.picture}}" alt="{{item.user.username}}" >
+							<figcaption>This item's creator is {{item.user.username}}.</figcaption>
 						</div>
 	
 						{% endif %}

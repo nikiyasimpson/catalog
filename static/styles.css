@@ -60,36 +60,7 @@ footer {
 }
 
 /*Heading and Banner */
-
-.top-menu {
-	padding-top: 30px;
-	padding-bottom: 30px;
-}
-
-.top-menu p {
-	margin-bottom: 0;
-	line-height: 16px;
-}
-.top-menu a {
-	margin-bottom: 0;
-	line-height: 16px;
-	font-size: 16px;
-	color: #7B7573;
-	font-weight: 400;
-}
-
-.banner.menu {
-	height: 150px;
-	background-color: #E1E17F;
-}
-
-.banner.profile {
-	height: 150px;
-	background-color: #A6E8EB;
-}
-
-.banner.main {
-	height: 150px;
+.jumbotron {
 	background: url('/static/furniture.jpg');
 	background-position: right;
 	background-repeat: no-repeat;
@@ -97,12 +68,10 @@ footer {
 	text-align: center;
 	opacity: 0.8;
 	margin-bottom: 10px;
+  }
 
-}
-
-.banner.main h1 {
-	margin: 45px 0;
-	padding: 45px;
+.jumbotron h1 {
+	margin: 25px 0;
 	color: white;
 	font-weight: 400;
 	text-shadow: 2px 2px black;
@@ -161,21 +130,6 @@ footer {
 
 /* Category Items */
 
- .item-list {
- 	background-color: #FFF;
-	 padding: 20px;
-	 margin-bottom: 20px;
-}
-
-.menu-item {
-	background: #F0F0F0;
-	padding: 20px;
-	margin: 20px;
-	margin-left: -20px;
-}
-.menu-price {
-	font-weight: 700;
-}
 .creator {
 	padding-right: 20px;
 	margin-top: -20px;
@@ -188,8 +142,9 @@ footer {
 }
 
 .creator img {
-	width: 100px;
+	width: 25px;
 	border-radius: 50%;
+	float:left;
 }
 .creator figcaption {
 	font-size: 14px;
@@ -199,9 +154,13 @@ footer {
 }
 
 .item-photo {
-	width: 50%;
+	width: 30%;
 	margin: 80px auto 20px auto;
 	height: auto;
+}
+
+.item-price {
+	font-weight:bold;
 }
 
 .item-description {
@@ -231,6 +190,7 @@ footer {
 	overflow-x:auto;
 }
 
+/* Card Styling */
 .card {
 	width: 300px;
 	margin: 0 10px 0 10px;
@@ -262,3 +222,9 @@ footer {
 	  margin-top: auto;
 	  min-height: 100px;
 	}
+
+.center-items {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
