@@ -244,15 +244,17 @@ def gdisconnect():
 # JSON APIs to view Catalog Information
 
 @app.route('/api/item/<int:item_id>/JSON')
-@auth.login_required
 def ItemJSON(item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
 
 @app.route('/api/items/JSON')
-@auth.login_required
 def itemsJSON():
+    if 'username' not in login_session:
+        return redirect('/login')
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
@@ -260,7 +262,6 @@ def itemsJSON():
 # CATEGORY ROUTES
 # Create a new category
 @app.route('/category/new/', methods=['GET', 'POST'])
-@auth.login_required
 def newCategory():
     if 'username' not in login_session:
         return redirect('/login')
@@ -279,7 +280,6 @@ def newCategory():
 
 # Edit category from the catalog
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
-@auth.login_required
 def editCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -301,7 +301,6 @@ def editCategory(category_id):
 
 # Delete an item from the catalog
 @app.route('/category/<int:category_id>/remove', methods=['GET', 'POST'])
-@auth.login_required
 def deleteCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -321,7 +320,6 @@ def deleteCategory(category_id):
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
-@auth.login_required
 def newItem():
     if 'username' not in login_session:
         return redirect('/login')
@@ -362,7 +360,6 @@ def newItem():
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
-@auth.login_required
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -396,7 +393,6 @@ def editItem(item_id):
 
 # Delete an item from the catalog
 @app.route('/item/<int:item_id>/remove', methods=['GET', 'POST'])
-@auth.login_required
 def deleteItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
