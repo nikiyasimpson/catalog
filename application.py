@@ -1,9 +1,11 @@
 import os
-from flask import Flask, jsonify, request, url_for, abort, g, render_template, redirect, flash, make_response
+from flask import Flask, jsonify, request, url_for, abort, g, render_template
+from flask import redirect, flash, make_response
 
-#libraries for connecting to data
+# libraries for connecting to data
 from model import Base, User, Item, Category
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, asc
 
@@ -19,7 +21,7 @@ from oauth2client.client import FlowExchangeError
 import httplib2
 import requests
 
-#set libraries and variables for image uploads
+# set libraries and variables for image uploads
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 
@@ -28,13 +30,14 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 auth = HTTPBasicAuth()
 
-#Connect to Item Catalog Database
-engine = create_engine('sqlite:///itemCatalog.db', connect_args={'check_same_thread':False})
+# Connect to Item Catalog Database
+engine = create_engine('sqlite:///itemCatalog.db',
+                       connect_args={'check_same_thread': False})
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-## Create Flask App and configure uploads folder
+# Create Flask App and configure uploads folder
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -45,27 +48,32 @@ CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 
+
 @auth.verify_password
-def verify_password(username_or_token,password):
+def verify_password(username_or_token, password):
     print("Looking for user %s" % username_or_token)
-    #Try to see if it's a token first
+    # Try to see if it's a token first
     user_id = User.verify_auth_token(username_or_token)
     if user_id:
-        user = session.query(User).filter_by(id = user_id).one()
+        user = session.query(User).filter_by(id=user_id).one()
     else:
-        user = session.query(User).filter_by(username = username_or_token).first()
+        user = session.query(User).filter_by(
+            username=username_or_token).first()
         if not user:
             return False
     g.user = user
     return True
 
+
 @auth.error_handler
 def auth_error():
     return "Access Denied"
 
+
 @app.route('/login')
 def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+    state = ''.join(random.choice(
+        string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
@@ -75,17 +83,25 @@ def logout():
     gdisconnect()
     login_session.clear()
     return redirect(url_for('showCatalog'))
-    
+
+
 # Show item catalog
 @app.route('/')
 def showCatalog():
     categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(Item).order_by(asc(Item.name))
     if 'username' not in login_session:
-        return render_template('publiccatalog.html', items=items, categories=categories)
+        return render_template('publiccatalog.html',
+                               items=items,
+                               categories=categories)
     else:
-        return render_template('catalog.html', items=items, categories=categories,login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('catalog.html',
+                               items=items,
+                               categories=categories,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 # Show catalog categories
 @app.route('/categories')
@@ -95,9 +111,12 @@ def showCategories():
     if 'username' not in login_session:
         return redirect('/login')
     else:
-        return render_template('category.html', categories=categories, login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
-        
+        return render_template('category.html',
+                               categories=categories,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -123,7 +142,8 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+           % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
 
@@ -153,22 +173,25 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-    
+
     user = getUserInfo(user_id)
     token = user.generate_auth_token(600)
-    
-    flash("you are now logged in as %s" % login_session['username'])
+
+    flash("You are now logged in as %s" % login_session['username'])
     print("Successfully logged in!")
     print(token)
     return render_template('successlogin.html', login_session=login_session)
 
+
 # User Helper Functions
 def createUser(login_session):
-    newUser = User(username=login_session['username'], email=login_session[
-                   'email'], picture=login_session['picture'])
+    newUser = User(username=login_session['username'],
+                   email=login_session['email'],
+                   picture=login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(
+        email=login_session['email']).one()
     return user.id
 
 
@@ -181,15 +204,14 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except SQLAlchemyError as e:
         return None
-
 
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
-        # Only disconnect a connected user.
+    # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
         response = make_response(
@@ -212,7 +234,9 @@ def gdisconnect():
         return response
     else:
         # For whatever reason, the given token was invalid.
-        response = make_response(json.dumps('Failed to revoke token for given user.'), 400)
+        response = make_response(json.dumps(
+            'Failed to revoke token for given user.'),
+            400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -225,13 +249,15 @@ def ItemJSON(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
+
 @app.route('/api/items/JSON')
 @auth.login_required
 def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
-## CATEGORY ROUTES
+
+# CATEGORY ROUTES
 # Create a new category
 @app.route('/category/new/', methods=['GET', 'POST'])
 @auth.login_required
@@ -245,8 +271,11 @@ def newCategory():
         flash('New %s Category Successfully Created' % (newCategory.name))
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('newCategory.html', login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('newCategory.html',
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 # Edit category from the catalog
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -263,8 +292,12 @@ def editCategory(category_id):
         flash('Category Successfully Edited')
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('editCategory.html', category=editedCategory, login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('editCategory.html',
+                               category=editedCategory,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 # Delete an item from the catalog
 @app.route('/category/<int:category_id>/remove', methods=['GET', 'POST'])
@@ -279,8 +312,12 @@ def deleteCategory(category_id):
         flash('Category Successfully Deleted')
         return redirect(url_for('showCatalog'))
     else:
-        return render_template('deleteCategory.html',category=categoryToDelete, login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('deleteCategory.html',
+                               category=categoryToDelete,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
@@ -289,7 +326,7 @@ def newItem():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
-         # check if the post request has the file part
+        # check if the post request has the file part
         if 'picture' not in request.files:
             flash('No picture image to upload')
             return redirect(request.url)
@@ -304,20 +341,24 @@ def newItem():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print('file uploaded successfully')
             print(filename)
-            #return redirect(url_for('uploaded_file', filename=filename))
-        
-        newItem = Item(name=request.form['name'], description=request.form['description'], price=request.form[
-                           'price'], picture= filename, category_id = request.form['category_id'], user_id = login_session['user_id'])
+
+        newItem = Item(name=request.form['name'],
+                       description=request.form['description'],
+                       price=request.form['price'], picture=filename,
+                       category_id=request.form['category_id'],
+                       user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash('New %s Item Successfully Created' % (newItem.name))
-
-
         return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('newItem.html', categories = categories, login=login_session['username'],
-        user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('newItem.html',
+                               categories=categories,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
@@ -325,10 +366,10 @@ def newItem():
 def editItem(item_id):
     if 'username' not in login_session:
         return redirect('/login')
-        
+
     editedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
-        #Check Authorization for the user to edit the record
+        # Check Authorization for the user to edit the record
         creator = getUserInfo(editedItem.user_id)
         if creator.id == login_session['user_id']:
             if request.form['name']:
@@ -345,7 +386,12 @@ def editItem(item_id):
             return redirect(url_for('showCatalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('editItem.html', item=editedItem, categories = categories, login=login_session['username'], user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('editItem.html',
+                               item=editedItem,
+                               categories=categories,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
 
 
 # Delete an item from the catalog
@@ -357,7 +403,7 @@ def deleteItem(item_id):
 
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
-        #Check Authorization for the user to edit the record
+        # Check Authorization for the user to edit the record
         creator = getUserInfo(itemToDelete.user_id)
         if creator.id == login_session['user_id']:
             session.delete(itemToDelete)
@@ -368,18 +414,25 @@ def deleteItem(item_id):
             flash('You do not have authorization to delete this item.')
             return redirect(url_for('showCatalog'))
     else:
-        return render_template('deleteItem.html', item=itemToDelete, login=login_session['username'], user_id= login_session['user_id'], photo=login_session['picture'])
+        return render_template('deleteItem.html',
+                               item=itemToDelete,
+                               login=login_session['username'],
+                               user_id=login_session['user_id'],
+                               photo=login_session['picture'])
+
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host = '0.0.0.0', port = 8000)
+    app.run(host='0.0.0.0', port=5000)

@@ -22,7 +22,7 @@ The following libraries need to be installed for the web server to run.
 To run web server, from the catalog directory run: `python application.py`
 
 ###To View Website
-Open browser to `http://localhost:8000`
+Open browser to `http://localhost:5000`
 
 
 ##Style References
