@@ -14,6 +14,7 @@ secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits)
 
 
 class User(Base):
+    """Registered user information stored in the database"""
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     username = Column(String(32), index=True)
@@ -47,6 +48,7 @@ class User(Base):
 
 
 class Category(Base):
+    """Category for Furniture Items Stored in the database"""
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -55,6 +57,7 @@ class Category(Base):
 
 
 class Item(Base):
+    """Furniture Item Information stored in the database"""
     __tablename__ = 'item'
     id = Column(Integer, primary_key=True)
     name = Column(String)
