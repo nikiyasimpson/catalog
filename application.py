@@ -1,6 +1,14 @@
 import os
-from flask import Flask, jsonify, request, url_for, abort, g, render_template
-from flask import redirect, flash, make_response
+from flask import (Flask,
+                   jsonify,
+                   request,
+                   url_for,
+                   abort,
+                   g,
+                   render_template,
+                   redirect,
+                   flash,
+                   make_response)
 
 # libraries for connecting to data
 from model import Base, User, Item, Category
