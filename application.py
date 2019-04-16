@@ -35,7 +35,6 @@ from flask import send_from_directory
 
 UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
-
 auth = HTTPBasicAuth()
 
 # Connect to Item Catalog Database
@@ -83,7 +82,7 @@ def showLogin():
     state = ''.join(random.choice(
         string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
-    return render_template('login.html', STATE=state)
+    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
 
 
 @app.route('/logout')
