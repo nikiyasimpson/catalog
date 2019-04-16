@@ -267,6 +267,11 @@ def newCategory():
         return redirect('/login')
     if request.method == 'POST':
         newCategory = Category(name=request.form['name'])
+
+        if newCategory == "":
+            flash('Please enter a category name.')
+            return redirect(request.url)
+
         session.add(newCategory)
         session.commit()
         flash('New %s Category Successfully Created' % (newCategory.name))
@@ -340,10 +345,28 @@ def newItem():
             print('file uploaded successfully')
             print(filename)
 
-        newItem = Item(name=request.form['name'],
-                       description=request.form['description'],
-                       price=request.form['price'], picture=filename,
-                       category_id=request.form['category_id'],
+        name = request.form['name']
+        description = request.form['description']
+        price = request.form['price']
+        category_id = request.form['category_id']
+
+        if name == "":
+            flash('Please enter an item name.')
+            return redirect(request.url)
+        if description == "":
+            flash('Please enter a description for the item.')
+            return redirect(request.url)
+        if price == "":
+            flash('Please enter a price for the item.')
+            return redirect(request.url)
+        if category_id == "":
+            flash('Please select a category for the item.')
+            return redirect(request.url)
+
+        newItem = Item(name=name,
+                       description=description,
+                       price=price, picture=filename,
+                       category_id=category_id,
                        user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
