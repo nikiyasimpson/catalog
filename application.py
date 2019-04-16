@@ -204,7 +204,7 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         return None
 
 

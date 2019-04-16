@@ -51,6 +51,8 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
+    items = relationship("Item", cascade="all, delete-orphan")
+
 
 class Item(Base):
     __tablename__ = 'item'
@@ -62,7 +64,7 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user = relationship("User", cascade="save-update")
 
     @property
     def serialize(self):
