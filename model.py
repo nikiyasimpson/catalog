@@ -15,7 +15,7 @@ secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits)
 
 class User(Base):
     """Registered user information stored in the database"""
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(String(32), index=True)
     password_hash = Column(String(64))
@@ -66,7 +66,7 @@ class Item(Base):
     price = Column(String)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", cascade="save-update")
 
     @property
@@ -81,5 +81,5 @@ class Item(Base):
         }
 
 
-engine = create_engine('sqlite:///itemCatalog.db')
+engine = create_engine('postgresql://catalog:catalog@localhost/itemCatalog')
 Base.metadata.create_all(engine)

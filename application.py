@@ -11,6 +11,7 @@ from flask import (Flask,
                    make_response)
 
 # libraries for connecting to data
+import psycopg2
 from model import Base, User, Item, Category
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
@@ -23,6 +24,7 @@ import json
 from flask import session as login_session
 import random
 import string
+from functools import wraps
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -38,8 +40,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 auth = HTTPBasicAuth()
 
 # Connect to Item Catalog Database
-engine = create_engine('sqlite:///itemCatalog.db',
-                       connect_args={'check_same_thread': False})
+engine = create_engine('postgresql://catalog:catalog@localhost/itemCatalog')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -54,6 +55,19 @@ app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
+
+def run_query(query):
+    """ This function connects to the database
+    and returns the results from query """
+
+    conn = psycopg2.connect("dbname=catalog")
+    c = conn.cursor()
+    try:
+        c.execute(query)
+        return c.fetchall()
+    except psycopg2.Error as e:
+        pass
+    print(e.pgerror)
 
 
 @auth.verify_password
@@ -70,6 +84,7 @@ def verify_password(username_or_token, password):
             return False
     g.user = user
     return True
+
 
 
 @auth.error_handler
