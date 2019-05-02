@@ -16,10 +16,11 @@ The following libraries need to be installed for the web server to run.
 
 3. SQL Alchemy: `pip install SQLAlchemy`. [SQL Alchemy Documentation](https://pypi.org/project/SQLAlchemy/)
 4. Oauth2Client: `pip install oauth2client` . [Oauth2Client](https://pypi.org/project/oauth2client/)
-
+5. Flask-Login: `pip install flask-login`. [Flask-Login](https://flask-login.readthedocs.io/en/latest/#flask_login.LoginManager)
+6. PostgreSql: `sudo apt-get install postgresql`[PostgreSql](https://www.godaddy.com/garage/how-to-install-postgresql-on-ubuntu-14-04/)
 
 ### To Run Web Server
-To run web server, from the catalog directory run: `python application.py`
+To run web server, from the catalog directory run: `python __init__.py`
 
 ### To View Website
 Open browser to `http://localhost:5000`
@@ -33,6 +34,7 @@ Open browser to `http://localhost:5000`
 ## References
 [Flexbox Solution for Horizontal Scrolling](https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6)
 [Card Hover Effects](https://codepen.io/jasonheecs/pen/GNNwpZ)
+[Flask Login Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins)
 
 ## Author
 Nikiya M. Simpson

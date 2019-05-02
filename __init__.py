@@ -10,7 +10,6 @@ from flask import (Flask,
                    flash,
                    make_response)
 
-import psycopg2
 from model import Base, User, Item, Category
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
@@ -23,7 +22,6 @@ import json
 from flask import session as login_session
 import random
 import string
-from functools import wraps
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
