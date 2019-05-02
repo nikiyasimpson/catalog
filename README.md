@@ -35,6 +35,7 @@ Open browser to `http://localhost:5000`
 [Flexbox Solution for Horizontal Scrolling](https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6)
 [Card Hover Effects](https://codepen.io/jasonheecs/pen/GNNwpZ)
 [Flask Login Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins)
+[Add Google Oauth to Flask Application](https://medium.com/@bittu/add-google-oauth2-login-in-your-flask-web-app-9f455695341e)
 
 ## Author
 Nikiya M. Simpson
