@@ -18,6 +18,8 @@ The following libraries need to be installed for the web server to run.
 4. Oauth2Client: `pip install oauth2client` . [Oauth2Client](https://pypi.org/project/oauth2client/)
 5. Flask-Login: `pip install flask-login`. [Flask-Login](https://flask-login.readthedocs.io/en/latest/#flask_login.LoginManager)
 6. PostgreSql: `sudo apt-get install postgresql`[PostgreSql](https://www.godaddy.com/garage/how-to-install-postgresql-on-ubuntu-14-04/)
+7. PassLIb: `sudo pip install passlib`
+8. Request: `sudo pip install requests`
 
 ### To Run Web Server
 To run web server, from the catalog directory run: `python __init__.py`
