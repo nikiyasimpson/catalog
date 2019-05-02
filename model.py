@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
+from flask_login import UserMixin
 from passlib.apps import custom_app_context as pwd_context
 import random
 import string
@@ -13,7 +14,7 @@ secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits)
                      for x in range(32))
 
 
-class User(Base):
+class User(Base, UserMixin):
     """Registered user information stored in the database"""
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)

@@ -10,7 +10,6 @@ from flask import (Flask,
                    flash,
                    make_response)
 
-# libraries for connecting to data
 import psycopg2
 from model import Base, User, Item, Category
 from sqlalchemy.ext.declarative import declarative_base
@@ -46,28 +45,27 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Create Flask App and configure uploads folder
-app = Flask(__name__, static_url_path='/static')
+import flask
+app = flask.Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'keyforthisapp'
+
+from flask_login import LoginManager, current_user, login_user, login_required, logout_user
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return session.query(User).filter_by(id=user_id).one()
 
 # only allow up to 4MB image upload to server
 app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
+
 
 CLIENT_ID = json.loads(
     open('client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 
-def run_query(query):
-    """ This function connects to the database
-    and returns the results from query """
-
-    conn = psycopg2.connect("dbname=catalog")
-    c = conn.cursor()
-    try:
-        c.execute(query)
-        return c.fetchall()
-    except psycopg2.Error as e:
-        pass
-    print(e.pgerror)
 
 
 @auth.verify_password
@@ -84,7 +82,6 @@ def verify_password(username_or_token, password):
             return False
     g.user = user
     return True
-
 
 
 @auth.error_handler
@@ -127,17 +124,14 @@ def showCatalog():
 
 # Show catalog categories
 @app.route('/categories')
-@auth.login_required
+@login_required
 def showCategories():
     categories = session.query(Category).order_by(asc(Category.name))
-    if 'username' not in login_session:
-        return redirect('/login')
-    else:
-        return render_template('category.html',
-                               categories=categories,
-                               login=login_session['username'],
-                               user_id=login_session['user_id'],
-                               photo=login_session['picture'])
+    return render_template('category.html',
+                            categories=categories,
+                            login=login_session['username'],
+                            user_id=login_session['user_id'],
+                            photo=login_session['picture'])
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -185,20 +179,20 @@ def gconnect():
     answer = requests.get(userinfo_url, params=params)
 
     data = answer.json()
-
     login_session['username'] = data.get('name', '')
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
     # See if a user exists, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
+
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
     user = getUserInfo(user_id)
     token = user.generate_auth_token(600)
-
+    login_user(user)
     flash("You are now logged in as %s" % login_session['username'])
     print("Successfully logged in!")
     print(token)
@@ -228,6 +222,10 @@ def getUserID(email):
         return user.id
     except SQLAlchemyError:
         return None
+        
+def checkUserLogin():
+    if g.user is None:
+        return redirect('/login')
 
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
@@ -251,6 +249,9 @@ def gdisconnect():
         del login_session['email']
         del login_session['picture']
 
+        #log out user from Flask User management
+        logout_user()
+
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -266,17 +267,15 @@ def gdisconnect():
 # JSON APIs to view Catalog Information
 
 @app.route('/api/item/<int:item_id>/JSON')
+@login_required
 def ItemJSON(item_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
 
 @app.route('/api/items/JSON')
+@login_required
 def itemsJSON():
-    if 'username' not in login_session:
-        return redirect('/login')
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
@@ -284,9 +283,8 @@ def itemsJSON():
 # CATEGORY ROUTES
 # Create a new category
 @app.route('/category/new/', methods=['GET', 'POST'])
+@login_required
 def newCategory():
-    if 'username' not in login_session:
-        return redirect('/login')
     if request.method == 'POST':
         newCategory = Category(name=request.form['name'])
 
@@ -307,9 +305,8 @@ def newCategory():
 
 # Edit category from the catalog
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editCategory(category_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     editedCategory = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -328,9 +325,8 @@ def editCategory(category_id):
 
 # Delete an item from the catalog
 @app.route('/category/<int:category_id>/remove', methods=['GET', 'POST'])
+@login_required
 def deleteCategory(category_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     categoryToDelete = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         session.delete(categoryToDelete)
@@ -347,9 +343,8 @@ def deleteCategory(category_id):
 
 # Create a new item
 @app.route('/item/new/', methods=['GET', 'POST'])
+@login_required
 def newItem():
-    if 'username' not in login_session:
-        return redirect('/login')
     if request.method == 'POST':
         # check if the post request has the file part
         if 'picture' not in request.files:
@@ -405,10 +400,8 @@ def newItem():
 
 # Edit an item from the catalog
 @app.route('/item/<int:item_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editItem(item_id):
-    if 'username' not in login_session:
-        return redirect('/login')
-
     editedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
         # Check Authorization for the user to edit the record
@@ -438,10 +431,8 @@ def editItem(item_id):
 
 # Delete an item from the catalog
 @app.route('/item/<int:item_id>/remove', methods=['GET', 'POST'])
+@login_required
 def deleteItem(item_id):
-    if 'username' not in login_session:
-        return redirect('/login')
-
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
         # Check Authorization for the user to edit the record
@@ -460,6 +451,7 @@ def deleteItem(item_id):
                                login=login_session['username'],
                                user_id=login_session['user_id'],
                                photo=login_session['picture'])
+
 
 
 def allowed_file(filename):
