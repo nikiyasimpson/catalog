@@ -61,7 +61,7 @@ app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
 
 
 CLIENT_ID = json.loads(
-    open('client_secret.json', 'r').read())['web']['client_id']
+    open('/var/www/catalog/catalog/client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 
 
@@ -145,7 +145,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/catalog/catalog/client_secret.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -464,6 +464,6 @@ def uploaded_file(filename):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
+    app.secret_key = 'keyforthisapp'
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    app.run()
