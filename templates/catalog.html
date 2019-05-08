@@ -17,7 +17,7 @@
 					<div class="card-footer bg-dark text-white">
 						<p>{{item.description}}</p>
 
-						{% if item.user_id == user_id : %}
+						{% if item.user.username  == login : %}
 						<div class="modify-buttons">
 						<a href="{{ url_for('deleteItem', item_id = item.id) }}" class="btn btn-primary">Remove</a>
 						<a href="{{ url_for('editItem', item_id = item.id) }} " class="btn btn-primary">Edit</a>

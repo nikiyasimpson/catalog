@@ -3,6 +3,7 @@ The following is a Flask full stack application demonstrating authentication usi
 The Top Furniture Catalog is a collection of furniture inventory for a store. Log in to add furniture to the collection using
 your Google Account.
 
+Catalog has been updated to run on Linux Ubuntu Server with PostgreSQL and Apache
 Users are only allowed to update their own items.
 
 ## How to Run
@@ -20,13 +21,12 @@ The following libraries need to be installed for the web server to run.
 6. PostgreSql: `sudo apt-get install postgresql`[PostgreSql](https://www.godaddy.com/garage/how-to-install-postgresql-on-ubuntu-14-04/)
 7. PassLIb: `sudo pip install passlib`
 8. Request: `sudo pip install requests`
-
-### To Run Web Server
-To run web server, from the catalog directory run: `python __init__.py`
+9. Apache: `sudo apt update` `sudo apt install apache2`. Steps to Install Server and Virtual host in References below under How to Install Apache Web Server on Ubuntu.
 
 ### To View Website
-Open browser to `http://localhost:5000`
-
+Open browser to `http://54.90.118.51.xip.io:80`
+IP Address: 54.90.118.51
+Port: 80
 
 ## Style References
 [Bootstrap 4.3.1](https://getbootstrap.com/docs/4.3/layout/overview/)
@@ -38,6 +38,10 @@ Open browser to `http://localhost:5000`
 [Card Hover Effects](https://codepen.io/jasonheecs/pen/GNNwpZ)
 [Flask Login Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins)
 [Add Google Oauth to Flask Application](https://medium.com/@bittu/add-google-oauth2-login-in-your-flask-web-app-9f455695341e)
+[How to Deploy a Flask Applcation on Ubuntu Server](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+[How to Install PostgreSQL on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+[Migrating SQLite to PostgreSQL](https://tutorialinux.com/today-learned-migrating-sqlite-postgres-easy-sequel/)
+[How to Install Apache Web Server on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ## Author
 Nikiya M. Simpson

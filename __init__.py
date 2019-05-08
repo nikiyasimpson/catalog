@@ -186,6 +186,7 @@ def gconnect():
 
     if not user_id:
         user_id = createUser(login_session)
+
     login_session['user_id'] = user_id
 
     user = getUserInfo(user_id)
@@ -220,7 +221,8 @@ def getUserID(email):
         return user.id
     except SQLAlchemyError:
         return None
-        
+
+
 def checkUserLogin():
     if g.user is None:
         return redirect('/login')
