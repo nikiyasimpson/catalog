@@ -32,7 +32,7 @@ import requests
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = '/var/www/catalog/catalog/static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 auth = HTTPBasicAuth()
 

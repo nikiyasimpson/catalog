@@ -2,7 +2,7 @@
 BEGIN TRANSACTION;
 
 CREATE TABLE category (
-	id INTEGER NOT NULL, 
+	id SERIAL, 
 	name TEXT, 
 	PRIMARY KEY (id)
 );
@@ -12,7 +12,7 @@ INSERT INTO "category" VALUES(2,'Living Room');
 INSERT INTO "category" VALUES(3,'Bedroom Furniture');
 
 CREATE TABLE users (
-	id INTEGER NOT NULL, 
+	id SERIAL, 
 	username TEXT, 
 	password_hash TEXT, 
 	email TEXT, 
@@ -24,7 +24,7 @@ INSERT INTO "users" VALUES(1,'Nikiya Simpson',NULL,'nikiyasimpson@gmail.com','ht
 INSERT INTO "users" VALUES(2,'Beta Pi Omega Photos',NULL,'betapiomegaphotos@gmail.com','https://lh6.googleusercontent.com/-0NRIZYCHrRU/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rc4ydhUFTEXzqVcI8LA7cUBdknuaA/mo/photo.jpg');
 INSERT INTO "users" VALUES(3,'Nikiya Simpson',NULL,'arcounselingcenter@gmail.com','https://lh3.googleusercontent.com/-3XVBswUQMjI/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rdpeAs8Tm6nciSf9vtL3dGO4m359w/mo/photo.jpg');
 CREATE TABLE item (
-	id INTEGER NOT NULL, 
+	id SERIAL, 
 	name TEXT, 
 	picture TEXT, 
 	description TEXT, 
