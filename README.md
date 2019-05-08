@@ -34,14 +34,14 @@ Port: 80
 [Libraries for File Upload](http://flask.pocoo.org/docs/1.0/patterns/fileuploads/)
 
 ## References
-[Flexbox Solution for Horizontal Scrolling](https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6)
-[Card Hover Effects](https://codepen.io/jasonheecs/pen/GNNwpZ)
-[Flask Login Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins)
-[Add Google Oauth to Flask Application](https://medium.com/@bittu/add-google-oauth2-login-in-your-flask-web-app-9f455695341e)
-[How to Deploy a Flask Applcation on Ubuntu Server](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
-[How to Install PostgreSQL on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
-[Migrating SQLite to PostgreSQL](https://tutorialinux.com/today-learned-migrating-sqlite-postgres-easy-sequel/)
-[How to Install Apache Web Server on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
+1.[Flexbox Solution for Horizontal Scrolling](https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6)
+2.[Card Hover Effects](https://codepen.io/jasonheecs/pen/GNNwpZ)
+3.[Flask Login Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins)
+4.[Add Google Oauth to Flask Application](https://medium.com/@bittu/add-google-oauth2-login-in-your-flask-web-app-9f455695341e)
+5.[How to Deploy a Flask Applcation on Ubuntu Server](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+6.[How to Install PostgreSQL on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+7.[Migrating SQLite to PostgreSQL](https://tutorialinux.com/today-learned-migrating-sqlite-postgres-easy-sequel/)
+8.[How to Install Apache Web Server on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ## Author
 Nikiya M. Simpson
