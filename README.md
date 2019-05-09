@@ -60,7 +60,8 @@ The following libraries need to be installed for the web server to run.
 4. Create itemCatalog database.
 5. Create User, Item, and Category tables:
 
-```CREATE TABLE category (
+```
+CREATE TABLE category (
 	id SERIAL, 
 	name TEXT, 
 	PRIMARY KEY (id)
