@@ -10,6 +10,10 @@ Users are only allowed to update their own items.
 ### Google Account
 Must have a Google account to log in to the system from the web browser.
 
+### Server Information
+IP Address: 54.90.118.51
+SSH Port: 2200
+
 ### Libraries
 The following libraries need to be installed for the web server to run.
 1. Flask: `pip install Flask` . For more documentation, visit [Flask Documentation](http://flask.pocoo.org/docs/1.0/installation/)
