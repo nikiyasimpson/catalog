@@ -117,7 +117,7 @@ Port: 80
 
 9.[How to Install Linux Apache MySQL PHP LAMP Stack on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04)
 
-10. [How do i remove Apache2 Ubuntu Default Page?](https://www.digitalocean.com/community/questions/how-do-i-remove-apache2-ubuntu-default-page)
+10.[How do i remove Apache2 Ubuntu Default Page?](https://www.digitalocean.com/community/questions/how-do-i-remove-apache2-ubuntu-default-page)
 
 ## Author
 Nikiya M. Simpson
