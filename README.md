@@ -60,7 +60,7 @@ The following libraries need to be installed for the web server to run.
 4. Create itemCatalog database.
 5. Create User, Item, and Category tables:
 
-`CREATE TABLE category (
+```CREATE TABLE category (
 	id SERIAL, 
 	name TEXT, 
 	PRIMARY KEY (id)
@@ -86,7 +86,8 @@ CREATE TABLE item (
 	PRIMARY KEY (id), 
 	FOREIGN KEY (category_id) REFERENCES category (id), 
 	FOREIGN KEY (user_id) REFERENCES users (id)
-);`
+);
+```
 
 ## To View Website
 Open browser to `http://54.90.118.51.xip.io:80`
